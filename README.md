@@ -27,10 +27,6 @@ Database: MongoDB
 APIs: spoonacular.com/food-api, themealdb.com/api.php 
 
 
-=== Installation === 
-----------
-
-
 === Usage ===  
 
 Visit the deployed website or run the development server locally. 
