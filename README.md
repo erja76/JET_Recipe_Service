@@ -9,7 +9,7 @@ JET_Recipe_Service is a web application that provides users with a platform to s
 It includes a database of recipes sourced from various free recipe APIs. 
 Users can search for recipes based on different criteria. 
 Users can create accounts to save their favourite recipes and receive personalized recipe recommendations based on their previous searches.  
-...
+
 
 === Features === 
 
