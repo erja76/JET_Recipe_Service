@@ -1,0 +1,30 @@
+{
+  "name": "jet_recipe_service",
+  "version": "1.0.0",
+  "description": "Contributors: Tanja Eriksson, Jenna Korhonen, Erja Pisilä",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/erja76/JET_Recipe_Service.git"
+  },
+  "author": "Erja",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/erja76/JET_Recipe_Service/issues"
+  },
+  "homepage": "https://github.com/erja76/JET_Recipe_Service#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-handlebars": "^7.1.2",
+    "mongoose": "^8.3.1",
+    "mongosh": "^2.2.3"
+  }
+}
