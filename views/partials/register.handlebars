@@ -1,0 +1,38 @@
+<form id="registerForm" action="/register" method="POST">
+    <label for="name"><strong>Name:</strong></label>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="email"><strong>Email:</strong></label>
+    <input type="email" id="email" name="email" required><br>
+
+    <label for="recipePreferences"><strong>What kind of recipes do you like?</strong></label><br>
+    <input type="checkbox" id="salad" name="recipePreferences" value="salad">
+    <label for="salad">Salad</label><br>
+
+    <input type="checkbox" id="meat" name="recipePreferences" value="meat">
+    <label for="meat">Meat</label><br>
+
+    <input type="checkbox" id="fish" name="recipePreferences" value="fish">
+    <label for="fish">Fish</label><br>
+
+    <input type="checkbox" id="vegetarian" name="recipePreferences" value="vegetarian">
+    <label for="vegetarian">Vegetarian</label><br>
+
+    <input type="checkbox" id="pizza" name="recipePreferences" value="pizza">
+    <label for="pizza">Pizza</label><br>
+
+    <input type="checkbox" id="pastries" name="recipePreferences" value="pastries">
+    <label for="pastries">Pastries</label><br>
+
+    <input type="checkbox" id="desserts" name="recipePreferences" value="desserts">
+    <label for="desserts">Desserts</label><br>
+
+    <label><strong>Would you like to receive recommendations of recipes that match your
+            preferences?</strong></label><br>
+    <input type="radio" id="recommendationsYes" name="receiveRecommendations" value="true">
+    <label for="recommendationsYes">Yes</label>
+    <input type="radio" id="recommendationsNo" name="receiveRecommendations" value="false">
+    <label for="recommendationsNo">No</label><br>
+
+    <button type="submit">Register</button>
+</form>
