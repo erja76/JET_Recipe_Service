@@ -10,11 +10,10 @@
 
 <body>
     <header>
-        <h1> </h1>
         <nav>
             <ul>
-                <li><a href="#">Log in</a></li>
-                <li><a href="#">Register</a></li>
+                <li><a href="#"><button>Log in</button></a></li>
+                <li><a href="#" id="registerLink"><button>Register</button></a></li>
             </ul>
         </nav>
     </header>
@@ -23,9 +22,21 @@
         {{{body}}}
     </main>
 
+    <div id="registerFormContainer" style="display: none;">
+        {{> register}}
+    </div>
+
     <footer>
         <p>&copy;2024 Created by Tanja Eriksson, Jenna Korhonen and Erja Pisilä</p>
     </footer>
+
+    <!-- Handling the click event -->
+    <script>
+        document.getElementById('registerLink').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+            document.getElementById('registerFormContainer').style.display = 'block'; // Show the registration form
+        });
+    </script>
 </body>
 
 </html>
