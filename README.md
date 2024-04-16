@@ -27,6 +27,15 @@ Database: MongoDB
 APIs: spoonacular.com/food-api, themealdb.com/api.php 
 
 
+=== Installation === 
+
+To install this project on your local environment, clone the project repository to your computer.
+Install the required project dependencies.
+Copy the .env.example file and rename it to .env. Fill in the required configuration values.
+Start the server by running the command npm run dev.
+Access the project by visiting http://localhost:3000 in your web browser.
+
+
 === Usage ===  
 
 Visit the deployed website or run the development server locally. 
