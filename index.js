@@ -31,6 +31,10 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
+app.get('/login', (req, res) => {
+    res.render('partials/login');
+});
+
 app.post('/register', (req, res) => {
     const formData = req.body;
 
@@ -56,5 +60,4 @@ app.post('/register', (req, res) => {
 });
 
 module.exports = app;
-
 

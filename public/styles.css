@@ -62,17 +62,37 @@ footer p {
 }
 
 form {
-    width: 50%;
+    width: 60%;
     margin: 0 auto;
-    padding-top: 100px;
 }
 
-form label, form input, form select, form button, form textarea {
-    margin-top: 5px;
+form label, form input, form select, form button {
+    margin-top: 15px;
     margin-bottom: 15px;
+}
+
+form input {
+    margin-left: 8px;
 }
 
 form button {
     width: 90px;
-    height: 40px;
+    height: 35px;
+}    
+
+.form-card form button[type="submit"]:hover {
+    background-color: #b2aaaa;
+  } 
+
+  .form-card {
+    width: 600px;
+    margin: 40px auto; 
+    border: 5px solid #666363; 
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: bisque;
+}
+
+.form-card form {
+    margin-top: 20px; 
 }
