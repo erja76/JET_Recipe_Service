@@ -36,6 +36,10 @@ app.get('/admin', (req, res) => {
   res.render('admin');
 });
 
+app.get('/login', (req, res) => {
+    res.render('partials/login');
+});
+
 app.post('/register', (req, res) => {
     const formData = req.body;
 
@@ -99,5 +103,4 @@ app.post('/saverecipe', async (req, res) => {
 
 
 module.exports = app;
-
 

@@ -12,7 +12,7 @@
     <header>
         <nav>
             <ul>
-                <li><a href="#"><button>Log in</button></a></li>
+                <li><a href="#" id="loginLink"><button>Log in</button></a></li>
                 <li><a href="#" id="registerLink"><button>Register</button></a></li>
             </ul>
         </nav>
@@ -22,6 +22,11 @@
         {{{body}}}
     </main>
 
+
+    <div id="loginFormContainer" style="display: none;">
+        {{> login}}
+    </div>
+
     <div id="registerFormContainer" style="display: none;">
         {{> register}}
     </div>
@@ -30,13 +35,24 @@
         <p>&copy;2024 Created by Tanja Eriksson, Jenna Korhonen and Erja Pisilä</p>
     </footer>
 
-    <!-- Handling the click event -->
+    <!-- Click event for registration -->
     <script>
         document.getElementById('registerLink').addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent default link behavior
+            event.preventDefault();
+            document.getElementById('loginFormContainer').style.display = 'none'; // Hide the login form
             document.getElementById('registerFormContainer').style.display = 'block'; // Show the registration form
         });
     </script>
+
+    <!-- Click event for login -->
+    <script>
+        document.getElementById('loginLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            document.getElementById('registerFormContainer').style.display = 'none'; // Hide the registration form
+            document.getElementById('loginFormContainer').style.display = 'block'; // Show the login form
+        });
+    </script>
+
 </body>
 
 </html>
