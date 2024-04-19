@@ -10,10 +10,16 @@
 
 <body>
     <header>
+        <h2 class="home">JET Recipe Service</h2>
         <nav>
+
             <ul>
-                <li><a href="#" id="loginLink"><button>Log in</button></a></li>
-                <li><a href="#" id="registerLink"><button>Register</button></a></li>
+                <!-- <li><a href="#" id="loginLink"><button>Log in</button></a></li>-->
+                <!-- <li><a href="#" id="registerLink"><button>Register</button></a></li>-->
+
+                <!-- vai onko tämä parempi tapa..?! -->
+                <li><a href="/login" id="loginLink"><button>Log in</button></a></li>
+                <li><a href="/register" id="registerLink"><button>Register</button></a></li>
             </ul>
         </nav>
     </header>
@@ -23,20 +29,20 @@
     </main>
 
 
-    <div id="loginFormContainer" style="display: none;">
+    <!-- <div id="loginFormContainer" style="display: none;">
         {{> login}}
     </div>
 
     <div id="registerFormContainer" style="display: none;">
         {{> register}}
-    </div>
+    </div> -->
 
     <footer>
         <p>&copy;2024 Created by Tanja Eriksson, Jenna Korhonen and Erja Pisilä</p>
     </footer>
 
-    <!-- Click event for registration -->
-    <script>
+    <!-- Handling click event for registration -->
+    <!--<script>
         document.getElementById('registerLink').addEventListener('click', function (event) {
             event.preventDefault();
             document.getElementById('loginFormContainer').style.display = 'none'; // Hide the login form
@@ -44,14 +50,14 @@
         });
     </script>
 
-    <!-- Click event for login -->
+    <! Handling click event for login 
     <script>
         document.getElementById('loginLink').addEventListener('click', function (event) {
             event.preventDefault();
             document.getElementById('registerFormContainer').style.display = 'none'; // Hide the registration form
             document.getElementById('loginFormContainer').style.display = 'block'; // Show the login form
         });
-    </script>
+    </script>-->
 
 </body>
 

@@ -12,6 +12,10 @@ p {
     font-size: large;
 }
 
+.home {
+    float: left; 
+}
+
 header {
     background-color: #494444;
     color: #fff;
