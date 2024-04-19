@@ -43,18 +43,21 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('partials/login'); // Render the login form
+    res.render('partials/register');
 });
 
+app.get('/register_success', (req, res) => {
+    res.render('partials/register_success');
+});
+// Not yet in use
 app.post('/login', (req, res) => {
-    // Assuming login is successful, redirect the user to the recipe page
     res.redirect('/recipe');
 });
 
-
-app.get('/recipe', (req, res) => {
-    res.render('recipe');
-});
+// Not yet in use
+//app.get('/recipe', (req, res) => {
+//    res.render('recipe');
+//});
 
 
 app.post('/register', (req, res) => {
@@ -82,7 +85,7 @@ app.post('/register', (req, res) => {
             newUser.save()
                 .then(() => {
                     console.log('User registered successfully:', newUser);
-                    res.redirect('/register');
+                    res.redirect('/register_success');
                 })
                 .catch((err) => {
                     console.error('Error registering user:', err);
@@ -105,22 +108,28 @@ app.post('/saverecipe', async (req, res) => {
                 app_key: process.env.EDAMAM_API_KEY
             }
         });
+        //        console.log(response.data.hits);
+        if (response.data.hits[recipeNumber] === undefined) {
+            res.status(400).send('No recipe found with given search terms.');
+        }
+        else {
+            const recipeFromApi = response.data.hits[recipeNumber].recipe;
+            console.log('Response from Edamam API:', response.data);
+            //            console.log(response.data.hits.length);
 
-        const recipeFromApi = response.data.hits[recipeNumber].recipe;
-        //console.log('Response from Edamam API:', response.data);
+            // Save the recipe to the database
+            const savedRecipe = await Recipe.create({
+                name: recipeFromApi.label,
+                image: recipeFromApi.image,
+                ingredients: recipeFromApi.ingredientLines,
+                instruction: recipeFromApi.shareAs,
+                cuisinetype: recipeFromApi.cuisineType,
+                mealtype: recipeFromApi.mealType,
+                dishtype: recipeFromApi.dishType,
+            });
 
-        // Save the recipe to the database
-        const savedRecipe = await Recipe.create({
-            name: recipeFromApi.label,
-            image: recipeFromApi.image,
-            ingredients: recipeFromApi.ingredientLines,
-            instruction: recipeFromApi.shareAs,
-            cusinetype: recipeFromApi.cuisineType,
-            mealtype: recipeFromApi.mealType,
-            dishtype: recipeFromApi.dishType,
-        });
-
-        res.json(savedRecipe);
+            res.json(savedRecipe);
+        }
     } catch (error) {
         console.error('Error fetching and saving recipe', error);
         res.status(500).json({ error: 'Error fetching and saving recipe' });
