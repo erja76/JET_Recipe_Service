@@ -14,6 +14,10 @@
             <ul>
                 <li><a href="#" id="loginLink"><button>Log in</button></a></li>
                 <li><a href="#" id="registerLink"><button>Register</button></a></li>
+
+                <!-- vai onko tämä parempi tapa..?! -->
+                <!-- <li><a href="/login" id="loginLink"><button>Log in</button></a></li> -->
+                <!-- <li><a href="/register" id="registerLink"><button>Register</button></a></li> -->
             </ul>
         </nav>
     </header>
@@ -35,7 +39,7 @@
         <p>&copy;2024 Created by Tanja Eriksson, Jenna Korhonen and Erja Pisilä</p>
     </footer>
 
-    <!-- Click event for registration -->
+    <!-- Handling click event for registration -->
     <script>
         document.getElementById('registerLink').addEventListener('click', function (event) {
             event.preventDefault();
@@ -44,7 +48,7 @@
         });
     </script>
 
-    <!-- Click event for login -->
+    <!-- Handling click event for login -->
     <script>
         document.getElementById('loginLink').addEventListener('click', function (event) {
             event.preventDefault();
