@@ -12,8 +12,11 @@ p {
     font-size: large;
 }
 
-.home {
-    float: left; 
+
+.home a {
+    float: left;
+    color: #fff;
+    padding-left: 20px;
 }
 
 header {
