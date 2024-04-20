@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/admin', (req, res) => {
-    res.render('admin');
+    res.render('partials/admin');
 });
 
 app.get('/login', (req, res) => {
