@@ -121,8 +121,14 @@ form button {
     margin-top: 20px; 
 }
 
+.recipes {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .recipe {
     display: flex;
+    width: 1;
     flex-direction: column;
     padding: 3rem;
     background-color: white;
@@ -141,4 +147,17 @@ form button {
 .recipe * {
     box-sizing: border-box;
     padding-bottom: 1rem;
+}
+
+.save::before {
+    content: "⭐ ";
+}
+
+.save {
+    padding: 1rem;
+    background-color: rgb(255, 224, 229);
+    border-color: black;
+    border-radius: 1rem;
+    text-decoration: none;
+    color: black
 }

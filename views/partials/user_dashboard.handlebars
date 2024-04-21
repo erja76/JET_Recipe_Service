@@ -1,6 +1,9 @@
+<main>
 <h1>Welcome to JET Recipe Service User Dashboard, {{user.name}}!</h1>
 
 <h2>Your recipes:</h2>
+
+<section class="recipes">
 {{#each recipes}}
 <div class="recipe">
     <h3 class="recipeName">{{this.name}}</h3>
@@ -20,6 +23,8 @@
         {{/each}}
     </ul>
     <p>{{this.instruction}}</p>
+    <a class="save" href=".">Save</a>
 </div>
 {{/each}}
-<br>
+</section>
+</main>
