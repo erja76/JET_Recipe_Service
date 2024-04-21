@@ -8,6 +8,16 @@ const flash = require('connect-flash');
 const router = express.Router();
 
 
+let recipeTest = [{
+    name: "Nimi",
+    cuisineType: ["Meal"],
+    mealType: ["main"],
+    dishType: ["dish"],
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_Hx9Ia-7_kc_EuexOf6N7uWDK_a4IChlTIZeWsuB9A&s",
+    ingredients: ["fish", "rice", "carrot"],
+    instruction: "Stir and cook!"
+}]
+
 
 // Front page
 router.get('/', (req, res) => {
@@ -38,7 +48,10 @@ router.get('/login_redirect', (req, res) => {
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
     res.render('partials/user_dashboard', 
-    { user: req.user/*,
+    { user: req.user,
+        recipes: recipeTest
+        
+        /*,
     recipes: */})
 });
 
