@@ -16,6 +16,15 @@ let recipeTest = [{
     image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_Hx9Ia-7_kc_EuexOf6N7uWDK_a4IChlTIZeWsuB9A&s",
     ingredients: ["fish", "rice", "carrot"],
     instruction: "Stir and cook!"
+},
+{
+    name: "Nimi",
+    cuisineType: ["Meal"],
+    mealType: ["main"],
+    dishType: ["dish"],
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_Hx9Ia-7_kc_EuexOf6N7uWDK_a4IChlTIZeWsuB9A&s",
+    ingredients: ["fish", "rice", "carrot"],
+    instruction: "Stir and cook!"
 }]
 
 

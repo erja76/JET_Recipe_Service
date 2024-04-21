@@ -29,9 +29,9 @@ header {
     height: 60px;
 }
 
-ul {
+/* ul {
     height: 50px;
-}
+} */
 
 nav ul {
     list-style: none;
@@ -125,6 +125,20 @@ form button {
     display: flex;
     flex-direction: column;
     padding: 3rem;
-    background-color: aqua;
+    background-color: white;
     box-shadow: black;
+    align-items: flex-start;
+    margin: 1rem;
+    width: max-content;
+    border-radius: 1rem;
+}
+
+.recipeName {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.recipe * {
+    box-sizing: border-box;
+    padding-bottom: 1rem;
 }

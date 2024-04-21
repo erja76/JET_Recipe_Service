@@ -4,6 +4,7 @@
 {{#each recipes}}
 <div class="recipe">
     <h3 class="recipeName">{{this.name}}</h3>
+    <img src={{this.image}} alt="Recipe image" class="recipeImg">
     {{#each this.cuisineType}}
         <p class="cuisineType">{{this}}</p>
     {{/each}}
@@ -11,7 +12,8 @@
         <p class="mealType">{{this}}</p>
     {{/each}}
     <p class="dishType">{{this.dishType}}</p>
-    <img src={{this.image}} alt="Recipe image" class="recipeImg">
+    
+    <h3>Ingredients:</h3>
     <ul class="ingredients">
         {{#each this.ingredients}}
         <li>{{this}}</li>
