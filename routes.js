@@ -37,7 +37,9 @@ router.get('/login_redirect', (req, res) => {
 
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
-    res.render('partials/user_dashboard', { user: req.user })
+    res.render('partials/user_dashboard', 
+    { user: req.user/*,
+    recipes: */})
 });
 
 // Middleware to ensure user is authenticated

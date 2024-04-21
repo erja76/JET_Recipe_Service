@@ -121,3 +121,10 @@ form button {
     margin-top: 20px; 
 }
 
+.recipe {
+    display: flex;
+    flex-direction: column;
+    padding: 3rem;
+    background-color: aqua;
+    box-shadow: black;
+}
