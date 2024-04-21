@@ -12,11 +12,12 @@ p {
     font-size: large;
 }
 
-
 .home a {
     float: left;
     color: #fff;
-    padding-left: 20px;
+    margin-left: 20px;
+    margin-top: 8px;
+    vertical-align: middle;
 }
 
 header {
@@ -25,15 +26,25 @@ header {
     padding: 10px;
     text-align: right;
     padding-right: 30px;
+    height: 60px;
+}
+
+ul {
+    height: 50px;
 }
 
 nav ul {
     list-style: none;
 }
 
+nav ul button {
+    vertical-align: middle;
+}
+
 nav ul li {
     display: inline;
     margin-right: 20px;
+    vertical-align: middle;
 }
 
 nav ul li a {
@@ -42,10 +53,16 @@ nav ul li a {
 }
 
 nav button {
-    width: 100px;
-    height: 30px;
+    width: 120px;
+    height: 40px;
     background-color: bisque;
     font-weight: bolder;
+    vertical-align: middle;
+}
+
+#logoutForm {
+    display: inline;
+    height: 15px;
 }
 
 main {
@@ -103,3 +120,4 @@ form button {
 .form-card form {
     margin-top: 20px; 
 }
+

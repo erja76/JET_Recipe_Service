@@ -23,11 +23,15 @@
   "dependencies": {
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "connect-flash": "^0.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-handlebars": "^7.1.2",
+    "express-session": "^1.18.0",
     "mongodb": "^6.5.0",
     "mongoose": "^8.3.1",
-    "mongosh": "^2.2.3"
+    "mongosh": "^2.2.3",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   }
 }

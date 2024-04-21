@@ -12,14 +12,16 @@
     <header>
         <h2 class="home"><a href="/">JET Recipe Service</a></h2>
         <nav>
-
             <ul>
-                <!-- <li><a href="#" id="loginLink"><button>Log in</button></a></li>-->
-                <!-- <li><a href="#" id="registerLink"><button>Register</button></a></li>-->
-
-                <!-- vai onko tämä parempi tapa..?! -->
+                {{#if user}}
+                <li><a href="/update" id="dashboardLink"><button>Update your details</button></a></li>
+                <li>
+                    <form id="logoutForm" action="/logout" method="POST"><button type="submit">Log out</button></form>
+                </li>
+                {{else}}
                 <li><a href="/login" id="loginLink"><button>Log in</button></a></li>
                 <li><a href="/register" id="registerLink"><button>Register</button></a></li>
+                {{/if}}
             </ul>
         </nav>
     </header>
@@ -28,36 +30,9 @@
         {{{body}}}
     </main>
 
-
-    <!-- <div id="loginFormContainer" style="display: none;">
-        {{> login}}
-    </div>
-
-    <div id="registerFormContainer" style="display: none;">
-        {{> register}}
-    </div> -->
-
     <footer>
         <p>&copy;2024 Created by Tanja Eriksson, Jenna Korhonen and Erja Pisilä</p>
     </footer>
-
-    <!-- Handling click event for registration -->
-    <!--<script>
-        document.getElementById('registerLink').addEventListener('click', function (event) {
-            event.preventDefault();
-            document.getElementById('loginFormContainer').style.display = 'none'; // Hide the login form
-            document.getElementById('registerFormContainer').style.display = 'block'; // Show the registration form
-        });
-    </script>
-
-    <! Handling click event for login 
-    <script>
-        document.getElementById('loginLink').addEventListener('click', function (event) {
-            event.preventDefault();
-            document.getElementById('registerFormContainer').style.display = 'none'; // Hide the registration form
-            document.getElementById('loginFormContainer').style.display = 'block'; // Show the login form
-        });
-    </script>-->
 
 </body>
 
