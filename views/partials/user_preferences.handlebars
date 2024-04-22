@@ -30,8 +30,8 @@
 <label><strong>Would you like to receive recommendations of recipes that match your
         preferences?</strong></label><br>
 <input type="radio" id="recommendationsYes" name="receiveRecommendations" value="true" {{#ifEqual
-    user.receiveRecommendations true }}checked{{/ifEqual}}>
+    user.receiveRecommendations true }}checked{{/ifEqual}} required>
 <label for="recommendationsYes">Yes</label>
 <input type="radio" id="recommendationsNo" name="receiveRecommendations" value="false" {{#ifEqual
-    user.receiveRecommendations false }}checked{{/ifEqual}}>
+    user.receiveRecommendations false }}checked{{/ifEqual}} required>
 <label for="recommendationsNo">No</label><br>
