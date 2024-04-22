@@ -29,6 +29,10 @@ header {
     height: 60px;
 }
 
+/* ul {
+    height: 50px;
+} */
+
 nav ul {
     list-style: none;
 }
@@ -135,4 +139,44 @@ form button {
     font-weight: bolder;
     vertical-align: middle;
 
+}
+.recipes {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.recipe {
+    display: flex;
+    width: 1;
+    flex-direction: column;
+    padding: 3rem;
+    background-color: white;
+    box-shadow: black;
+    align-items: flex-start;
+    margin: 1rem;
+    width: max-content;
+    border-radius: 1rem;
+}
+
+.recipeName {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.recipe * {
+    box-sizing: border-box;
+    padding-bottom: 1rem;
+}
+
+.save::before {
+    content: "⭐ ";
+}
+
+.save {
+    padding: 1rem;
+    background-color: rgb(255, 224, 229);
+    border-color: black;
+    border-radius: 1rem;
+    text-decoration: none;
+    color: black
 }
