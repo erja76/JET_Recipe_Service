@@ -1,0 +1,22 @@
+<h1>User Database</h1>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Admin Rights</th>
+        <th>Action</th>
+    </tr>
+    {{#each users}}
+    <tr>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>{{this.adminRights}}</td>
+        <td>
+            <form action="/admin/users/delete/{{this._id}}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {{/each}}
+</table>

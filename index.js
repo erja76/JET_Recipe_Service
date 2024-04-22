@@ -70,7 +70,6 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, authUser));
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
-
 passport.deserializeUser(async (id, done) => {
     const user = await User.findById(id).lean();
     done(null, user);
@@ -91,7 +90,6 @@ mongoose.connect(dbURI)
     .catch((err) => {
         console.error('Error connecting to DB:', err);
     });
-
 
 module.exports = app;
 
