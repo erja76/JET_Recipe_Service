@@ -203,9 +203,9 @@ router.post('/saverecipe', async (req, res) => {
                 image: recipeFromApi.image,
                 ingredients: recipeFromApi.ingredientLines,
                 instruction: recipeFromApi.shareAs,
-                cuisinetype: recipeFromApi.cuisineType,
-                mealtype: recipeFromApi.mealType,
-                dishtype: recipeFromApi.dishType,
+                cuisineType: recipeFromApi.cuisineType,
+                mealType: recipeFromApi.mealType,
+                dishType: recipeFromApi.dishType,
             });
 
             res.json(savedRecipe);
