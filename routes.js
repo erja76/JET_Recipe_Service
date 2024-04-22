@@ -30,7 +30,7 @@ let recipeTest = [{
 
 // Front page
 router.get('/', (req, res) => {
-    res.render('index');
+    res.render('partials/index', { user: req.user });
 });
 
 // Login 
@@ -56,10 +56,11 @@ router.get('/login_redirect', (req, res) => {
 
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
-    res.render('partials/user_dashboard', 
-    { user: req.user,
-        recipes: recipeTest
-        
+    res.render('partials/user_dashboard',
+        {
+            user: req.user,
+            recipes: recipeTest
+
         /*,
     recipes: */})
 });
@@ -75,9 +76,27 @@ function ensureAuthenticated(req, res, next) {
 // Admin 
 router.get('/admin', (req, res) => {
     if (req.user == null || req.user.adminRights === false) {
-        return res.redirect('/');
+        //        return res.redirect('/');
+        res.render('partials/index', {
+            user: req.user,
+            message: "You don't seem to have admin rights."
+        });
     }
     res.render('partials/admin', { user: req.user });
+});
+
+// User database
+router.get('/admin/users', async (req, res) => {
+    if (req.user == null || req.user.adminRights === false) {
+        return res.redirect('/');
+    }
+    try {
+        const users = await User.find();
+        res.render('partials/userDB', { users: users });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Error fetching users' });
+    }
 });
 
 // Register 
@@ -169,14 +188,14 @@ router.post('/saverecipe', async (req, res) => {
                 app_key: process.env.EDAMAM_API_KEY
             }
         });
-        //        console.log(response.data.hits);
+        // console.log(response.data.hits);
         if (response.data.hits[recipeNumber] === undefined) {
             res.status(400).send('No recipe found with given search terms.');
         }
         else {
             const recipeFromApi = response.data.hits[recipeNumber].recipe;
             console.log('Response from Edamam API:', response.data);
-            //            console.log(response.data.hits.length);
+            // console.log(response.data.hits.length);
 
             // Save the recipe to the database
             const savedRecipe = await Recipe.create({

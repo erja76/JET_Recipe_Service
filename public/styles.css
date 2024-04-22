@@ -121,6 +121,25 @@ form button {
     margin-top: 20px; 
 }
 
+.admin-form-card {
+    width: 250px;
+    height: 70px;
+    padding-top: 35px;
+    margin: 40px auto; 
+    border: 5px solid #666363; 
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: bisque;
+}
+
+.admin-form-card a {
+    font-size: x-large;
+    margin-top: 50px;
+    align-content: center;
+    font-weight: bolder;
+    vertical-align: middle;
+
+}
 .recipes {
     display: flex;
     flex-wrap: wrap;
