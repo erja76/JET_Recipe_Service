@@ -76,7 +76,6 @@ function ensureAuthenticated(req, res, next) {
 // Admin 
 router.get('/admin', (req, res) => {
     if (req.user == null || req.user.adminRights === false) {
-        //        return res.redirect('/');
         res.render('partials/index', {
             user: req.user,
             message: "You don't seem to have admin rights."
@@ -88,15 +87,23 @@ router.get('/admin', (req, res) => {
 // User database
 router.get('/admin/users', async (req, res) => {
     if (req.user == null || req.user.adminRights === false) {
-        return res.redirect('/');
+        res.render('partials/index', {
+            user: req.user,
+            message: "You don't seem to have admin rights."
+        });
     }
-    try {
-        const users = await User.find();
-        res.render('partials/userDB', { users: users });
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        res.status(500).json({ error: 'Error fetching users' });
+    res.render('partials/userDB', { user: req.user });
+});
+
+// Recipe database
+router.get('/admin/recipes', async (req, res) => {
+    if (req.user == null || req.user.adminRights === false) {
+        res.render('partials/index', {
+            user: req.user,
+            message: "You don't seem to have admin rights."
+        });
     }
+    res.render('partials/recipeDB', { user: req.user });
 });
 
 // Register 
