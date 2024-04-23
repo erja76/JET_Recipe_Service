@@ -83,7 +83,6 @@ router.get('/admin', (req, res) => {
     }
     res.render('partials/admin', { user: req.user });
 });
-///////////////////////////////////////////////////////////////////////////////////////////////
 
 // User database - list all users (server-side)
 router.get('/admin/users', async (req, res) => {
@@ -98,25 +97,12 @@ router.get('/admin/users', async (req, res) => {
         // Handlebars osaa käsitellä vain tavallisia JavaScript objecteja 
         // https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
         const users = await User.find().lean();
-        res.render('partials/userDB', { users: users });
+        res.render('partials/userDB', { user: req.user, users: users });
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).json({ error: 'Error fetching users' });
     }
 });
-
-// /////////////////////////////////////////////////////////////////////////////////////
-// // User database - list one user (server-side)
-// router.get('/admin/users', async (req, res) => {
-//     try {
-//         const users = await User.findOne();
-//         res.render('partials/userDB', { users: users });
-//     } catch (error) {
-//         console.error('Error fetching users:', error);
-//         res.status(500).json({ error: 'Error fetching users' });
-//     }
-// });
-///////////////////////////////////////////////////////////////////////////////////////////
 
 // User database - delete a user (server-side)
 router.post('/admin/users/delete/:id', async (req, res) => {
@@ -143,76 +129,49 @@ router.get('/admin_update_user/:id', async (req, res) => {
     }
 });
 
-// Update user details
-router.post('/admin_update_user/:id', (req, res) => {
-    const userId = req.params.id;
-    const formData = req.body;
+// Update user details in the user database (server-side)
+router.post('/admin_update_user', async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const formData = req.body;
 
-    User.findByIdAndUpdate(userId, {
-        name: formData.name,
-        email: formData.email,
-        adminRights: formData.adminRights === 'true',
-        recipeInterests: formData.recipeInterests,
-        receiveRecommendations: formData.receiveRecommendations === 'true',
-    }, { new: true })
-        .then((updatedUser) => {
-            console.log('User updated successfully:', updatedUser);
-            res.redirect('/admin/users');
-        })
-        .catch((err) => {
-            console.error('Error updating user:', err);
-            res.status(500).send('Error updating user. Please try again.');
-        });
+        let updateFields = {
+            name: formData.name,
+            email: formData.email,
+            adminRights: formData.adminRights === 'true',
+            recipeInterests: formData.recipePreferences,
+            receiveRecommendations: formData.receiveRecommendations === 'true',
+        };
+
+        // Check if the password has been updated
+        if (formData.password && formData.password !== "") {
+            const hashedPassword = await bcrypt.hash(formData.password, 10);
+            updateFields.password = hashedPassword;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updateFields, { new: true });
+
+        console.log('User updated successfully:', updatedUser);
+        res.redirect('/admin/users');
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).send('Error updating user. Please try again.');
+    }
 });
 
-
-// // Route to handle update user request ------ WHAT IS THIS?!
-// router.post('/update/:id', async (req, res) => {
-//     const userId = req.params.id;
-//     const formData = req.body;
-
-//     try {
-//         await User.findByIdAndUpdate(userId, {
-//             name: formData.name,
-//             email: formData.email,
-//             adminRights: formData.adminRights === 'true',
-//             recipeInterests: formData.recipeInterests || [],
-//             receiveRecommendations: formData.receiveRecommendations === 'true'
-//         });
-//         res.redirect('/admin/users');
-//     } catch (error) {
-//         console.error('Error updating user:', error);
-//         res.status(500).send('Error updating user. Please try again.');
-//     }
-// });
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Recipe database
+// TÄMÄ ON VIELÄ HYVIN KESKEN.....
+// User database - list all recipes (server-side)
 router.get('/admin/recipes', async (req, res) => {
     if (req.user == null || req.user.adminRights === false) {
-        res.render('partials/index', {
+        return res.render('partials/index', {
             user: req.user,
             message: "You don't seem to have admin rights."
         });
     }
-    res.render('partials/recipeDB', { user: req.user });
-});
-///////////////////////////////////////////////////////////////////////////////////////////
-
-// User database - list all recipes (server-side)
-router.get('/admin/recipes', async (req, res) => {
-    // if (req.user == null || req.user.adminRights === false) {
-    //     return res.render('partials/index', {
-    //         user: req.user,
-    //         message: "You don't seem to have admin rights."
-    //     });
-    // }
     try {
         const recipes = await Recipe.find().lean();
-        res.render('partials/recipeDB', { recipes: recipes });
+        res.render('partials/recipeDB', { user: req.user, recipes: recipes });
     } catch (error) {
         console.error('Error fetching recipes:', error);
         res.status(500).json({ error: 'Error fetching recipes' });

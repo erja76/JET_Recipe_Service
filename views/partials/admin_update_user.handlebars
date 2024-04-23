@@ -1,16 +1,22 @@
 <div class="form-card">
     <form id="updateForm" action="/admin_update_user" method="POST">
         <label for="name"><strong>Name:</strong></label>
-        <strong>{{user.name}}</strong><br>
+        <input type="text" name="name" placeholder="{{user.name}}" value="{{user.name}}"><br>
         <br>
         <label for="password"><strong>Password:</strong></label>
-        <strong> ******</strong><br>
+        <input type="text" name="password" placeholder="New password"><br>
         <br>
         <label for="email"><strong>Email:</strong></label>
-        <strong>{{user.email}}</strong><br>
+        <input type="email" name="email" placeholder="{{user.email}}" value="{{user.email}}"><br>
         <br>
 
+        {{#if showPasswordInput}}
+        <input type="hidden" name="password" value="{{user.password}}">
+        {{/if}}
+
         {{> user_preferences}}
+
+        <input type="hidden" name="userId" value="{{user._id}}">
 
         <button type="submit"><strong>Update Preferences</strong></button>
     </form>

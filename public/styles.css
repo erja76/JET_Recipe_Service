@@ -264,3 +264,12 @@ td img {
         height: 40px;
     }
     
+#recipe-table {
+    margin: auto;
+    width: 90%;
+    margin-bottom: 30px;
+}
+
+#recipe-table td {
+    padding: 10px;
+}
