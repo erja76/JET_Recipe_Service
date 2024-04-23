@@ -1,19 +1,41 @@
 <h1>User Database</h1>
+<br>
 
-<table>
+<table id="user-table" class="table">
     <tr>
+        <th>ID</th>
         <th>Name</th>
         <th>Email</th>
         <th>Admin Rights</th>
-        <th>Action</th>
+        <th>Recipe Interests</th>
+        <th>Recommendations</th>
+        <th>Update</th>
+        <th>Delete</th>
     </tr>
     {{#each users}}
     <tr>
-        <td>{{this.name}}</td>
-        <td>{{this.email}}</td>
-        <td>{{this.adminRights}}</td>
+        <td>{{_id}}</td>
+        <td>{{name}}</td>
+        <td>{{email}}</td>
+        <td>{{#if adminRights}}
+            <img src="/images/yes.png" alt="Yes">
+            {{else}}
+            <img src="/images/no.png" alt="No">
+            {{/if}}
+        </td>
+        <td>{{recipeInterests}}</td>
+        <td>{{#if receiveRecommendations}}
+            <img src="/images/yes.png" alt="Yes">
+            {{else}}
+            <img src="/images/no.png" alt="No">
+            {{/if}}
+        </td>
         <td>
-            <form action="/admin/users/delete/{{this._id}}" method="post">
+            <a href="/admin_update_user/{{_id}}" id="userUpdateLink"><button class="updateButton"
+                    type="submit">Update</button></a>
+        </td>
+        <td>
+            <form class="deleteColumn" action="/admin/users/delete/{{_id}}" method="post">
                 <button type="submit">Delete</button>
             </form>
         </td>

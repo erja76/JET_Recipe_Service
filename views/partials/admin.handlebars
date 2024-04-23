@@ -1,4 +1,10 @@
-<h1>Admin Dashboard</h1>
+<h1 class="admin-heading">Admin Dashboard</h1>
+
+{{#if message}}
+<div class="error-box">
+    <p>{{message}}</p>
+</div>
+{{/if}}
 
 <div class="admin-form-card">
     <a href="/admin/users" class="button">USER DATABASE</a>
