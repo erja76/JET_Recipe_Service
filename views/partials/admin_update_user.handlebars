@@ -1,0 +1,17 @@
+<div class="form-card">
+    <form id="updateForm" action="/admin_update_user" method="POST">
+        <label for="name"><strong>Name:</strong></label>
+        <strong>{{user.name}}</strong><br>
+        <br>
+        <label for="password"><strong>Password:</strong></label>
+        <strong> ******</strong><br>
+        <br>
+        <label for="email"><strong>Email:</strong></label>
+        <strong>{{user.email}}</strong><br>
+        <br>
+
+        {{> user_preferences}}
+
+        <button type="submit"><strong>Update Preferences</strong></button>
+    </form>
+</div>

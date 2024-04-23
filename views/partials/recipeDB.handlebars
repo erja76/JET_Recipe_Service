@@ -1,4 +1,50 @@
 <h1>Recipe Database</h1>
+<br>
+<ul class="recipe_list">
+    {{#each recipes}}
+    <li>{{name}}</li>
+    {{/each}}
+</ul>
+<br>
+
+<table id="recipe-table" class="table">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Iingredients</th>
+        <th>Instruction</th>
+        <th>Cuisine Type</th>
+        <th>Meal Type</th>
+        <th>Dish Type</th>
+        <th>Delete</th>
+    </tr>
+    {{#each recipes}}
+    <tr>
+        <td>{{_id}}</td>
+        <td>{{name}}</td>
+        <td>{{image}}</td>
+        <td>{{ingredients}}</td>
+        <td>{{instruction}}</td>
+        <td>{{cuisineType}}</td>
+        <td>{{mealType}}</td>
+        <td>{{dishType}}</td>
+        <td>
+            <form class="deleteColumn" action="/admin/recipes/delete/{{this._id}}" method="post">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {{/each}}
+</table>
+
+
+<!--  <ul class="recipe_list">
+    {{#each recipes}}
+    <li>{{name}}</li>
+    {{/each}}
+</ul>
+
+<br>
 
 {{#each recipes}}
 <div class="recipe-card">
@@ -12,6 +58,8 @@
 </div>
 {{/each}}
 
+<br>
+
 <div class="form-card">
     <form action="/saverecipe" method="post">
         <label for="recipeName">Recipe Name:</label>
@@ -20,4 +68,4 @@
         <input type="number" id="recipeNumber" name="recipeNumber" required><br><br>
         <button type="submit">Save Recipe</button>
     </form>
-</div>
+</div>    -->

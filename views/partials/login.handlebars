@@ -7,7 +7,9 @@
         <input type="password" id="password" name="password" required><br>
 
         {{#if message}}
-        <p style="color: red;">{{message}}</p>
+        <div class="error-box">
+            <p>{{message}}</p>
+        </div>
         {{/if}}
 
         <button type="submit"><strong>Login</strong></button>

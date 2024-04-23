@@ -9,6 +9,7 @@ body, h1, h2, h3, p, ul, li {
 }
 
 h1 {
+    margin: auto;
     margin-top: 15px;
     margin-bottom: 15px;
     align-content: center;
@@ -76,7 +77,7 @@ main {
 #userBox {
     height: auto;
     width: auto;
-    background-color: bisque;
+    background-color: rgb(241, 187, 126);
     padding: 5px 10px;
     border: 2px solid #9e9898;
     border-radius: 7px;
@@ -87,6 +88,23 @@ main {
 #userBox .user-name {
     font-size: 14px;
     font-weight: bolder;
+}
+
+.admin-heading {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 160px;
+}
+
+.error-box {
+    border: 2px solid black;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.error-box p {
+    color: red;
+    margin: 0;
 }
 
 footer {
@@ -121,7 +139,7 @@ form input {
 form button {
     width: 120px;
     height: 40px;
-}    
+}
 
 .form-card form button[type="submit"]:hover {
     background-color: #b2aaaa;
@@ -199,3 +217,50 @@ form button {
     text-decoration: none;
     color: black
 }
+
+#user-table.table {
+    margin: auto;
+    margin-bottom: 100px;
+}
+
+.table {
+    border-collapse: collapse;
+    width: 80%;
+}
+
+.table th, .table td {
+    border: 2px solid black;
+    padding: 0;
+    text-align: center;
+    justify-content: center;
+}
+
+.table th {
+    background-color: #f4d8c6;
+    height: 50px;
+}
+
+th, td {
+    border: 2px solid rgb(46, 36, 36);
+    padding: 0;
+    text-align: center;
+}
+
+td img {
+    width: 30px;
+    height: 30px;
+}
+
+.deleteColumn, .updateColumn {
+        width: 90px;
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        margin: auto;
+    }
+
+    .updateButton {
+        width: 90px;
+        height: 40px;
+    }
+    
