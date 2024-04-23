@@ -176,3 +176,22 @@ form button {
     text-decoration: none;
     color: black
 }
+
+.recipe-card{
+    display: flex;
+    width: 1;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: black;
+    align-items: flex-start;
+    margin: 1rem;
+    width: max-content;
+    border-radius: 1rem;
+    max-width: 400px;
+}
+
+.recipe-card *{
+    box-sizing: border-box;
+    padding-bottom: 1rem;
+}
