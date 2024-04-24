@@ -71,8 +71,21 @@ async function getRecipes(params = "") {
 }
 
 // User dashboard
-router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
-    
+router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
+    try{
+        const recipes = await Recipe.find().lean()
+        console.log(recipes)
+        res.render("partials/user_dashboard",
+            {
+                user: req.user,
+                recipes: recipes
+            }
+        )
+    }
+    catch (error) {
+        console.log(error)
+    }
+
 
 })
 
