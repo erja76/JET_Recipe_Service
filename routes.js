@@ -54,16 +54,35 @@ router.get('/login_redirect', (req, res) => {
     }
 });
 
+async function getRecipes(params = "") {
+    try {
+        await Recipe.find()
+            .then(result => {
+                const recipes = result.map(recipe => recipe.toJSON())
+                return recipes
+            }
+            )
+        //const recipes = result.map(recipe => recipe.toJSON())
+
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
-    res.render('partials/user_dashboard',
-        {
-            user: req.user,
-            recipes: recipeTest
+    
 
-        /*,
-    recipes: */})
-});
+})
+
+
+
+
+
+
+
+
 
 // Middleware to ensure user is authenticated
 function ensureAuthenticated(req, res, next) {
