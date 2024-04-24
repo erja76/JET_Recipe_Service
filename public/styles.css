@@ -177,21 +177,41 @@ form button {
     color: black
 }
 
-.recipe-card{
+.recipe-card {
     display: flex;
-    width: 1;
     flex-direction: column;
     padding: 1rem;
     background-color: white;
-    box-shadow: black;
-    align-items: flex-start;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    align-items: center; 
     margin: 1rem;
     width: max-content;
     border-radius: 1rem;
     max-width: 400px;
+    text-align: center; 
 }
 
-.recipe-card *{
+.recipe-card * {
     box-sizing: border-box;
     padding-bottom: 1rem;
+}
+
+.recipe-section {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.recipe-card p {
+    font-size: 0.9rem; 
+}
+
+
+.recipe-card ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left; 
+}
+
+.recipe-card ul li {
+    margin-bottom: 0.5rem; 
 }
