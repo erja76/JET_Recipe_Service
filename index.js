@@ -44,6 +44,8 @@ Handlebars.registerHelper('ifIn', function (elem, list = [], options) {
     return options.inverse(this);
 });
 
+
+
 // Passport Configuration
 authUser = async (username, password, done) => {
     const user = await User.findOne({ email: username });

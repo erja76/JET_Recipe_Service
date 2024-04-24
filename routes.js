@@ -44,7 +44,7 @@ router.post('/login', passport.authenticate('local', {
 }));
 
 router.get('/login_redirect', (req, res) => {
-    console.log(req.user);
+    //    console.log(req.user);
     if (req.user.adminRights == true) {
         res.redirect('/admin');
     }
@@ -53,16 +53,48 @@ router.get('/login_redirect', (req, res) => {
     }
 });
 
-// User dashboard
-router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
-    res.render('partials/user_dashboard',
-        {
-            user: req.user,
-            recipes: recipeTest
+async function getRecipes(params = "") {
+    try {
+        await Recipe.find()
+            .then(result => {
+                const recipes = result.map(recipe => recipe.toJSON())
+                return recipes
+            }
+            )
+        //const recipes = result.map(recipe => recipe.toJSON())
 
-        /*,
-    recipes: */})
-});
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+// User dashboard
+router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
+    try{
+        const recipes = await Recipe.find().lean()
+        console.log(recipes)
+        res.render("partials/user_dashboard",
+            {
+                user: req.user,
+                recipes: recipes
+            }
+        )
+    }
+    catch (error) {
+        console.log(error)
+    }
+
+
+})
+
+
+
+
+
+
+
+
 
 // Middleware to ensure user is authenticated
 function ensureAuthenticated(req, res, next) {
@@ -75,7 +107,6 @@ function ensureAuthenticated(req, res, next) {
 // Admin 
 router.get('/admin', (req, res) => {
     if (req.user == null || req.user.adminRights === false) {
-        //        return res.redirect('/');
         res.render('partials/index', {
             user: req.user,
             message: "You don't seem to have admin rights."
@@ -89,20 +120,102 @@ router.get('/retrievedRecipes', (req, res) => {
     res.render('partials/retrievedRecipes', { searchedRecipes: searchedRecipes });
 });
 
-// User database
+// User database - list all users (server-side)
+
 router.get('/admin/users', async (req, res) => {
     if (req.user == null || req.user.adminRights === false) {
-        return res.redirect('/');
+        return res.render('partials/index', {
+            user: req.user,
+            message: "You don't seem to have admin rights."
+        });
     }
     try {
-        const users = await User.find();
-        res.render('partials/userDB', { users: users });
+        // lean() palauttaa JavaScript objectin, find() palauttaa Mongoose objectin
+        // Handlebars osaa käsitellä vain tavallisia JavaScript objecteja 
+        // https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
+        const users = await User.find().lean();
+        res.render('partials/userDB', { user: req.user, users: users });
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).json({ error: 'Error fetching users' });
     }
 });
 
+// User database - delete a user (server-side)
+router.post('/admin/users/delete/:id', async (req, res) => {
+    const userId = req.params.id;
+    try {
+        await User.findByIdAndDelete(userId);
+        res.redirect('/admin/users');
+        //res.render('admin/user-deleted');
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).send('Error deleting user. Please try again.');
+    }
+});
+
+// User database - update a user (server-side)
+router.get('/admin_update_user/:id', async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const user = await User.findById(userId).lean();
+        res.render('partials/admin_update_user', { user });
+    } catch (error) {
+        console.error('Error fetching user for update:', error);
+        res.status(500).send('Error fetching user for update. Please try again.');
+    }
+});
+
+// Update user details in the user database (server-side)
+router.post('/admin_update_user', async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const formData = req.body;
+
+        let updateFields = {
+            name: formData.name,
+            email: formData.email,
+            adminRights: formData.adminRights === 'true',
+            recipeInterests: formData.recipePreferences,
+            receiveRecommendations: formData.receiveRecommendations === 'true',
+        };
+
+        // Check if the password has been updated
+        if (formData.password && formData.password !== "") {
+            const hashedPassword = await bcrypt.hash(formData.password, 10);
+            updateFields.password = hashedPassword;
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updateFields, { new: true });
+
+        console.log('User updated successfully:', updatedUser);
+        res.redirect('/admin/users');
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).send('Error updating user. Please try again.');
+    }
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// TÄMÄ ON VIELÄ HYVIN KESKEN.....
+// User database - list all recipes (server-side)
+router.get('/admin/recipes', async (req, res) => {
+    if (req.user == null || req.user.adminRights === false) {
+        return res.render('partials/index', {
+            user: req.user,
+            message: "You don't seem to have admin rights."
+        });
+    }
+    try {
+        const recipes = await Recipe.find().lean();
+        res.render('partials/recipeDB', { user: req.user, recipes: recipes });
+    } catch (error) {
+        console.error('Error fetching recipes:', error);
+        res.status(500).json({ error: 'Error fetching recipes' });
+    }
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////
 // Register 
 router.get('/register', (req, res) => {
     res.render('partials/register');
@@ -112,10 +225,10 @@ router.get('/register_success', (req, res) => {
     res.render('partials/register_success');
 });
 
-// Update
-router.get('/update', ensureAuthenticated, (req, res) => {
-    console.log(req.user);
-    res.render('partials/update', { user: req.user });
+// Update (client-side)
+router.get('/update_user', ensureAuthenticated, (req, res) => {
+    //    console.log(req.user);
+    res.render('partials/update_user', { user: req.user });
 });
 
 router.post('/logout', function (req, res, next) {
@@ -125,12 +238,12 @@ router.post('/logout', function (req, res, next) {
     });
 });
 
-// Registering a new user
+// Registering a new user (client-side)
 router.post('/register', (req, res) => {
     const formData = req.body;
     const password = formData.password;
 
-    // Create a new user
+    // Create a new user (client-side)
     // Generating salt for hashing passwords
     const saltRounds = 10; // The complexity of the hashing algorithm
     bcrypt.hash(password, saltRounds, function (err, hash) {
@@ -147,7 +260,7 @@ router.post('/register', (req, res) => {
                 adminRights: false
             });
 
-            // Save the new user to the database
+            // Save the new user to the database (client-side)
             newUser.save()
                 .then(() => {
                     console.log('User registered successfully:', newUser);
@@ -161,8 +274,8 @@ router.post('/register', (req, res) => {
     });
 });
 
-// Update user details
-router.post('/update', (req, res) => {
+// Update user details (client-side)
+router.post('/update_user', (req, res) => {
     const userId = req.user._id;
     const formData = req.body;
 

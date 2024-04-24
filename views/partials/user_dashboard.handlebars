@@ -1,11 +1,13 @@
 <main>
-<h1>Welcome to JET Recipe Service User Dashboard, {{user.name}}!</h1>
+    <h1>Welcome to JET Recipe Service User Dashboard!</h1>
 
-<h2>Your recipes:</h2>
+    <h2>Your recipes:</h2>
 
 <section class="recipes">
 {{#each recipes}}
+
 <div class="recipe">
+    {{this._id}}
     <h3 class="recipeName">{{this.name}}</h3>
     <img src={{this.image}} alt="Recipe image" class="recipeImg">
     {{#each this.cuisineType}}
@@ -27,4 +29,28 @@
 </div>
 {{/each}}
 </section>
+    <section class="recipes">
+        {{#each recipes}}
+        <div class="recipe">
+            <h3 class="recipeName">{{this.name}}</h3>
+            <img src={{this.image}} alt="Recipe image" class="recipeImg">
+            {{#each this.cuisineType}}
+            <p class="cuisineType">{{this}}</p>
+            {{/each}}
+            {{#each this.mealType}}
+            <p class="mealType">{{this}}</p>
+            {{/each}}
+            <p class="dishType">{{this.dishType}}</p>
+
+            <h3>Ingredients:</h3>
+            <ul class="ingredients">
+                {{#each this.ingredients}}
+                <li>{{this}}</li>
+                {{/each}}
+            </ul>
+            <p>{{this.instruction}}</p>
+            <a class="save" href=".">Save</a>
+        </div>
+        {{/each}}
+    </section>
 </main>
