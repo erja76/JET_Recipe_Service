@@ -7,7 +7,6 @@ const axios = require('axios');
 const flash = require('connect-flash');
 const router = express.Router();
 
-
 let recipeTest = [{
     name: "Nimi",
     cuisineType: ["Meal"],
@@ -116,7 +115,13 @@ router.get('/admin', (req, res) => {
     res.render('partials/admin', { user: req.user });
 });
 
+// Recipes fetched from Api
+router.get('/retrievedRecipes', (req, res) => {
+    res.render('partials/retrievedRecipes', { searchedRecipes: searchedRecipes });
+});
+
 // User database - list all users (server-side)
+
 router.get('/admin/users', async (req, res) => {
     if (req.user == null || req.user.adminRights === false) {
         return res.render('partials/index', {
@@ -288,45 +293,67 @@ router.post('/update_user', (req, res) => {
         });
 });
 
+let searchedRecipes = [];
+
 // Fetching recipe from Edamem api
-router.post('/saverecipe', async (req, res) => {
+router.post('/searchrecipe', async (req, res) => {
     try {
-        const { recipeName, recipeNumber } = req.body;
+        const { recipeName, numberOfRecipes } = req.body;
+
+        // Check that numberOfRecipes is a valid number between 1 and 10.
+        const num = parseInt(numberOfRecipes);
+        if (isNaN(num) || num < 1 || num > 10) {
+            return res.status(400).send('Number of recipes must be a valid number between 1 and 10.');
+        }
 
         const response = await axios.get('https://api.edamam.com/search', {
             params: {
                 q: recipeName,
                 app_id: process.env.EDAMAM_API_ID,
-                app_key: process.env.EDAMAM_API_KEY
+                app_key: process.env.EDAMAM_API_KEY,
+                to: num //number of recipes
             }
         });
-        // console.log(response.data.hits);
-        if (response.data.hits[recipeNumber] === undefined) {
-            res.status(400).send('No recipe found with given search terms.');
-        }
-        else {
-            const recipeFromApi = response.data.hits[recipeNumber].recipe;
-            console.log('Response from Edamam API:', response.data);
-            // console.log(response.data.hits.length);
 
-            // Save the recipe to the database
-            const savedRecipe = await Recipe.create({
-                name: recipeFromApi.label,
-                image: recipeFromApi.image,
-                ingredients: recipeFromApi.ingredientLines,
-                instruction: recipeFromApi.shareAs,
-                cuisineType: recipeFromApi.cuisineType,
-                mealType: recipeFromApi.mealType,
-                dishType: recipeFromApi.dishType,
-            });
+        const recipesFromApi = response.data.hits.map(hit => ({
+            name: hit.recipe.label,
+            image: hit.recipe.image,
+            ingredients: hit.recipe.ingredientLines,
+            instruction: hit.recipe.shareAs,
+            cuisineType: hit.recipe.cuisineType,
+            mealType: hit.recipe.mealType,
+            dishType: hit.recipe.dishType
+         }));
 
-            res.json(savedRecipe);
-        }
+        res.render('partials/retrievedRecipes', { searchedRecipes: recipesFromApi });
+    }
+    catch (error) {
+        console.error('Error fetching recipe', error);
+        res.status(500).json({ error: 'Error fetching recipe' });
+    }
+});
+
+// Save the recipe to the database
+router.post('/saverecipe', async (req, res) => {
+    try {
+        const { name, image, ingredients, instruction, cuisineType, mealType, dishType } = req.body;
+
+        const savedRecipe = await Recipe.create({
+            name: name,
+            image: image,
+            ingredients: ingredients,
+            instruction: instruction,
+            cuisineType: cuisineType,
+            mealType: mealType,
+            dishType: dishType,
+        });
+
+        res.json(savedRecipe);
+
     } catch (error) {
-        console.error('Error fetching and saving recipe', error);
-        res.status(500).json({ error: 'Error fetching and saving recipe' });
+        console.error('Error saving recipe', error);
+        res.status(500).json({ error: 'Error saving recipe' });
     }
 });
 
 module.exports = router;
-
