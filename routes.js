@@ -187,7 +187,7 @@ router.post('/searchrecipe', async (req, res) => {
     try {
         const { recipeName, numberOfRecipes } = req.body;
 
-        // Tarkistetaan, että numberOfRecipes on kelvollinen luku välillä 1-10
+        // Check that numberOfRecipes is a valid number between 1 and 10.
         const num = parseInt(numberOfRecipes);
         if (isNaN(num) || num < 1 || num > 10) {
             return res.status(400).send('Number of recipes must be a valid number between 1 and 10.');
@@ -198,26 +198,23 @@ router.post('/searchrecipe', async (req, res) => {
                 q: recipeName,
                 app_id: process.env.EDAMAM_API_ID,
                 app_key: process.env.EDAMAM_API_KEY,
-                to: num // Määritellään hakua varten API:n to-parametrin arvoksi numberOfRecipes
+                to: num //number of recipes
             }
         });
 
-        if (response.data.hits.length === 0) {
-            return res.status(400).send('No recipes found with given search terms.');
-        } else {
-            const recipesFromApi = response.data.hits.map(hit => ({
-                name: hit.recipe.label,
-                image: hit.recipe.image,
-                ingredients: hit.recipe.ingredientLines,
-                instruction: hit.recipe.shareAs,
-                cuisineType: hit.recipe.cuisineType,
-                mealType: hit.recipe.mealType,
-                dishType: hit.recipe.dishType
-            }));
+        const recipesFromApi = response.data.hits.map(hit => ({
+            name: hit.recipe.label,
+            image: hit.recipe.image,
+            ingredients: hit.recipe.ingredientLines,
+            instruction: hit.recipe.shareAs,
+            cuisineType: hit.recipe.cuisineType,
+            mealType: hit.recipe.mealType,
+            dishType: hit.recipe.dishType
+         }));
 
-            res.render('partials/retrievedRecipes', { searchedRecipes: recipesFromApi });
-        }
-    } catch (error) {
+        res.render('partials/retrievedRecipes', { searchedRecipes: recipesFromApi });
+    }
+    catch (error) {
         console.error('Error fetching recipe', error);
         res.status(500).json({ error: 'Error fetching recipe' });
     }
