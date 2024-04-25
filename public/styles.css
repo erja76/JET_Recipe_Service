@@ -105,12 +105,21 @@ main {
 .error-box p {
     color: red;
     margin: 0;
+    border: 2px solid black;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+#error {
+    border: 2px solid black;
+    padding: 10px;
+    margin-bottom: 15px;
 }
 
 footer {
     background-color: #494444;
     color: #fff;
-    padding: 10px;
+    padding: 12px;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -120,6 +129,14 @@ footer {
 footer p {
     font-weight: lighter;
     font-size: medium;
+    padding-left: 5px;
+
+}
+
+#accessibilityStatementLink {
+    color: #fff;
+    float: right;
+    padding-right: 25px;
 }
 
 form {
