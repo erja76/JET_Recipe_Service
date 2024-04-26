@@ -5,26 +5,9 @@ const User = require('./models/user');
 const Recipe = require('./models/recipes');
 const axios = require('axios');
 const flash = require('connect-flash');
+const { path } = require('.');
 const router = express.Router();
 
-let recipeTest = [{
-    name: "Nimi",
-    cuisineType: ["Meal"],
-    mealType: ["main"],
-    dishType: ["dish"],
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_Hx9Ia-7_kc_EuexOf6N7uWDK_a4IChlTIZeWsuB9A&s",
-    ingredients: ["fish", "rice", "carrot"],
-    instruction: "Stir and cook!"
-},
-{
-    name: "Nimi",
-    cuisineType: ["Meal"],
-    mealType: ["main"],
-    dishType: ["dish"],
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_Hx9Ia-7_kc_EuexOf6N7uWDK_a4IChlTIZeWsuB9A&s",
-    ingredients: ["fish", "rice", "carrot"],
-    instruction: "Stir and cook!"
-}]
 
 
 // Front page
@@ -88,6 +71,24 @@ router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
 
 })
 
+router.get('/search', async (req, res) => {
+    const param = req.params[0]
+    try{
+        const recipes = await Recipe.find({cuisineType: param}).lean()
+        console.log(recipes)
+        res.render("partials/user_dashboard",
+            {
+                user: req.user,
+                recipes: recipes
+            }
+        )
+    }
+    catch (error) {
+        console.log(error)
+    }
+
+
+})
 
 // Middleware to ensure user is authenticated
 function ensureAuthenticated(req, res, next) {

@@ -1,4 +1,4 @@
-<main>
+
     <h1>Welcome to JET Recipe Service User Dashboard!</h1>
 
     <h2>Your recipes:</h2>
@@ -7,9 +7,8 @@
 {{#each recipes}}
 
 <div class="recipe">
-    {{this._id}}
     <h3 class="recipeName">{{this.name}}</h3>
-    <img src={{this.image}} alt="Recipe image" class="recipeImg">
+    <!--<img src={{this.image}} alt="Recipe image" class="recipeImg">-->
     {{#each this.cuisineType}}
         <p class="cuisineType">{{this}}</p>
     {{/each}}
@@ -53,4 +52,3 @@
         </div>
         {{/each}}
     </section>
-</main>
