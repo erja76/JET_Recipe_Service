@@ -23,7 +23,7 @@
         <td>{{mealType}}</td>
         <td>{{dishType}}</td>
         <td>
-            <form class="deleteColumn" action="/admin/recipes/delete/{{this._id}}" method="post">
+            <form class="deleteColumn" action="/admin/recipes/delete/{{_id}}" method="post" onsubmit="return confirm('Are you sure you want to delete the recipe {{name}}?');">
                 <button type="submit">Delete</button>
             </form>
         </td>

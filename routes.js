@@ -110,6 +110,7 @@ router.get('/admin', (req, res) => {
 
 // Recipes fetched from Api
 router.get('/retrievedRecipes', (req, res) => {
+  
     res.render('partials/retrievedRecipes', { searchedRecipes: searchedRecipes });
 });
 
@@ -286,6 +287,19 @@ router.post('/update_user', (req, res) => {
         });
 });
 
+// Recipe database - delete a recipe
+router.post('/admin/recipes/delete/:id', async (req, res) => {
+    const recipeId = req.params.id;
+    try {
+        await Recipe.findByIdAndDelete(recipeId);
+        res.redirect('/admin/recipes');
+       // res.render('admin/user-deleted');
+    } catch (error) {
+        console.error('Error deleting recipe:', error);
+        res.status(500).send('Error deleting recipe. Please try again.');
+    }
+});
+
 let searchedRecipes = [];
 
 // Fetching recipe from Edamem api
@@ -321,7 +335,7 @@ router.post('/searchrecipe', async (req, res) => {
         // Save the retrieved recipes into the searchedRecipes variable
         searchedRecipes = recipesFromApi;
 
-        res.render('partials/retrievedRecipes', { searchedRecipes: recipesFromApi });
+        res.render('partials/retrievedRecipes', { user: req.user, searchedRecipes: recipesFromApi });
     }
     catch (error) {
         console.error('Error fetching recipe', error);
