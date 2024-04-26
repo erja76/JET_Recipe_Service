@@ -89,13 +89,6 @@ router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
 })
 
 
-
-
-
-
-
-
-
 // Middleware to ensure user is authenticated
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -325,6 +318,9 @@ router.post('/searchrecipe', async (req, res) => {
             dishType: hit.recipe.dishType
          }));
 
+        // Save the retrieved recipes into the searchedRecipes variable
+        searchedRecipes = recipesFromApi;
+
         res.render('partials/retrievedRecipes', { searchedRecipes: recipesFromApi });
     }
     catch (error) {
@@ -338,6 +334,12 @@ router.post('/saverecipe', async (req, res) => {
     try {
         const { name, image, ingredients, instruction, cuisineType, mealType, dishType } = req.body;
 
+        // Check if the recipe is already saved in the database
+        const existingRecipe = await Recipe.findOne({ name: name });
+        if (existingRecipe) {
+            return res.render('partials/retrievedRecipes', { errorMessage: 'Recipe already exists in the database.', searchedRecipes: searchedRecipes });
+        }
+
         const savedRecipe = await Recipe.create({
             name: name,
             image: image,
@@ -348,7 +350,11 @@ router.post('/saverecipe', async (req, res) => {
             dishType: dishType,
         });
 
-        res.json(savedRecipe);
+        // Render same page with success message and saved recipe name
+        res.render('partials/retrievedRecipes', { 
+            searchedRecipes: searchedRecipes,
+            successMessage: `Recipe "${savedRecipe.name}" saved successfully!` 
+        });
 
     } catch (error) {
         console.error('Error saving recipe', error);
