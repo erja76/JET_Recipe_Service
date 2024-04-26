@@ -1,5 +1,13 @@
 <h1>New recipes</h1>
 
+{{#if errorMessage}}
+<div class="error-message">{{ errorMessage }}</div>
+{{/if}}
+
+{{#if successMessage}}
+<div class="success-message">{{ successMessage }}</div>
+{{/if}}
+
 <!--"Print out the recipes retrieved for edamame on recipe cards. -->
 <section class="recipe-section">
   {{#each searchedRecipes}}
@@ -42,6 +50,32 @@
           <input type="hidden" name="dishType" value="{{ this.dishType }}">
           <button type="submit" name="saveRecipe" value="{{ this.name }}">Save Recipe</button>
       </form>
+      <button class="delete-recipe" data-recipe-name="{{ this.name }}">Remove</button>
   </div>
   {{/each}}
 </section>
+
+
+
+<script>
+  const removedRecipes = new Set(); 
+
+  // Event listener to remove recipe from list
+  document.querySelectorAll('.delete-recipe').forEach(button => {
+    button.addEventListener('click', (event) => {
+      const recipeName = event.target.dataset.recipeName;
+      removedRecipes.add(recipeName); 
+      // Find the recipe card element and remove it from the DOM
+      const recipeCard = event.target.closest('.recipe-card');
+      if (recipeCard) {
+        recipeCard.remove();
+        alert(`Recipe "${recipeName}" removed from list.`);
+      }
+    });
+  });
+
+ // Function checks whether the recipe should be displayed
+  function shouldDisplayRecipe(name) {
+    return !removedRecipes.has(name);
+  }
+</script>
