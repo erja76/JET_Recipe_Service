@@ -12,6 +12,7 @@ const session = require('express-session')
 const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash');
 const routes = require('./routes');
+const adminRoutes = require('./admin_routes');
 
 const app = express();
 
@@ -79,6 +80,7 @@ passport.deserializeUser(async (id, done) => {
 
 // Routes
 app.use('/', routes);
+app.use('/', adminRoutes);
 
 // Database Connection
 const dbURI = `mongodb+srv://${process.env.DBUSERNAME}:${process.env.DBPASSWORD}@${process.env.CLUSTER}.mongodb.net/${process.env.DB}?retryWrites=true&w=majority&appName=Cluster0`;

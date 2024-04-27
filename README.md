@@ -6,9 +6,9 @@ Contributors: Tanja Eriksson, Jenna Korhonen, Erja Pisilä
 === Description === 
 
 JET_Recipe_Service is a web application that provides users with a platform to search, explore and save recipes. 
-It includes a database of recipes sourced from various free recipe APIs. 
+It includes a database of recipes sourced from a free recipe API. 
 Users can search for recipes based on different criteria. 
-Users can create accounts to save their favourite recipes and receive personalized recipe recommendations based on their previous searches.  
+Users can create accounts to save their favourite recipes and receive personalized recipe recommendations based on their recipe preferences.  
 
 
 === Features === 
@@ -21,10 +21,10 @@ Recommendation system suggesting recipes based on user preferences and search hi
 
 === Technologies Used === 
 
-Frontend: HTML, CSS, React 
+Frontend: HTML, CSS, Handlebars, React
 Backend: JavaScript, Node.js, Express 
 Database: MongoDB 
-APIs: spoonacular.com/food-api, themealdb.com/api.php 
+API: https://www.edamam.com 
 
 
 === Installation === 

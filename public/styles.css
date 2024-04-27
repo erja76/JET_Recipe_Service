@@ -96,21 +96,28 @@ main {
     padding-left: 160px;
 }
 
-.error-box {
+.error-box p {
+    margin: 0;
+    color: red;
     border: 2px solid black;
-    padding: 10px;
+    padding: 15px;
     margin-bottom: 15px;
 }
 
-.error-box p {
-    color: red;
-    margin: 0;
+.indexerror {
+    color: red; 
+    border: 2px solid black; 
+    padding: 15px; 
+    margin-top: 30px;
+    margin-bottom: 15px; 
+    width: 200px;
+    margin: auto;
 }
 
 footer {
     background-color: #494444;
     color: #fff;
-    padding: 10px;
+    padding: 12px;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -120,6 +127,14 @@ footer {
 footer p {
     font-weight: lighter;
     font-size: medium;
+    padding-left: 5px;
+
+}
+
+#accessibilityStatementLink {
+    color: #fff;
+    float: right;
+    padding-right: 25px;
 }
 
 form {

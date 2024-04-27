@@ -9,6 +9,14 @@ const { path } = require('.');
 const router = express.Router();
 
 
+// Middleware to ensure user is authenticated 
+// isAuthenticated = passport.js-kirjaston oma työkalu
+const ensureAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.status(401).render('partials/login', { message: 'Please log in to view this resource!' });
+}
 
 // Front page
 router.get('/', (req, res) => {
@@ -17,7 +25,7 @@ router.get('/', (req, res) => {
 
 // Login 
 router.get('/login', (req, res) => {
-    res.render('partials/login', { message: req.flash('error') });
+    res.render('partials/login', { user: req.user, message: req.flash('error') });
 });
 
 router.post('/login', passport.authenticate('local', {
@@ -27,7 +35,6 @@ router.post('/login', passport.authenticate('local', {
 }));
 
 router.get('/login_redirect', (req, res) => {
-    //    console.log(req.user);
     if (req.user.adminRights == true) {
         res.redirect('/admin');
     }
@@ -54,7 +61,7 @@ async function getRecipes(params = "") {
 
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
-    try{
+    try {
         const recipes = await Recipe.find().lean()
         console.log(recipes)
         res.render("partials/user_dashboard",
@@ -74,12 +81,12 @@ router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
 router.get('/search', async (req, res) => {
     const q = {}
     q = req.query.map(item => {
-        if(item.lenght) {
+        if (item.lenght) {
             return item
         }
     })
     console.log(req.query)
-    try{
+    try {
         const recipes = await Recipe.find({
             cuisineType: { $in: q.cuisineType },
             mealType: { $in: q.mealType },
@@ -87,8 +94,8 @@ router.get('/search', async (req, res) => {
             ingredients: { $in: q.ingredients },
             name: q.name
 
-            })
-        .lean()
+        })
+            .lean()
 
         res.render("partials/user_dashboard",
             {
@@ -104,126 +111,11 @@ router.get('/search', async (req, res) => {
 
 })
 
-// Middleware to ensure user is authenticated
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.render('partials/login', { message: 'Please log in to view this resource!' });
-}
-
-// Admin 
-router.get('/admin', (req, res) => {
-    if (req.user == null || req.user.adminRights === false) {
-        res.render('partials/index', {
-            user: req.user,
-            message: "You don't seem to have admin rights."
-        });
-    }
-    res.render('partials/admin', { user: req.user });
-});
-
 // Recipes fetched from Api
 router.get('/retrievedRecipes', (req, res) => {
     res.render('partials/retrievedRecipes', { searchedRecipes: searchedRecipes });
 });
 
-// User database - list all users (server-side)
-
-router.get('/admin/users', async (req, res) => {
-    if (req.user == null || req.user.adminRights === false) {
-        return res.render('partials/index', {
-            user: req.user,
-            message: "You don't seem to have admin rights."
-        });
-    }
-    try {
-        // lean() palauttaa JavaScript objectin, find() palauttaa Mongoose objectin
-        // Handlebars osaa käsitellä vain tavallisia JavaScript objecteja 
-        // https://stackoverflow.com/questions/59690923/handlebars-access-has-been-denied-to-resolve-the-property-from-because-it-is
-        const users = await User.find().lean();
-        res.render('partials/userDB', { user: req.user, users: users });
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        res.status(500).json({ error: 'Error fetching users' });
-    }
-});
-
-// User database - delete a user (server-side)
-router.post('/admin/users/delete/:id', async (req, res) => {
-    const userId = req.params.id;
-    try {
-        await User.findByIdAndDelete(userId);
-        res.redirect('/admin/users');
-        //res.render('admin/user-deleted');
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(500).send('Error deleting user. Please try again.');
-    }
-});
-
-// User database - update a user (server-side)
-router.get('/admin_update_user/:id', async (req, res) => {
-    const userId = req.params.id;
-    try {
-        const user = await User.findById(userId).lean();
-        res.render('partials/admin_update_user', { user });
-    } catch (error) {
-        console.error('Error fetching user for update:', error);
-        res.status(500).send('Error fetching user for update. Please try again.');
-    }
-});
-
-// Update user details in the user database (server-side)
-router.post('/admin_update_user', async (req, res) => {
-    try {
-        const userId = req.body.userId;
-        const formData = req.body;
-
-        let updateFields = {
-            name: formData.name,
-            email: formData.email,
-            adminRights: formData.adminRights === 'true',
-            recipeInterests: formData.recipePreferences,
-            receiveRecommendations: formData.receiveRecommendations === 'true',
-        };
-
-        // Check if the password has been updated
-        if (formData.password && formData.password !== "") {
-            const hashedPassword = await bcrypt.hash(formData.password, 10);
-            updateFields.password = hashedPassword;
-        }
-
-        const updatedUser = await User.findByIdAndUpdate(userId, updateFields, { new: true });
-
-        console.log('User updated successfully:', updatedUser);
-        res.redirect('/admin/users');
-    } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).send('Error updating user. Please try again.');
-    }
-});
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// TÄMÄ ON VIELÄ HYVIN KESKEN.....
-// User database - list all recipes (server-side)
-router.get('/admin/recipes', async (req, res) => {
-    if (req.user == null || req.user.adminRights === false) {
-        return res.render('partials/index', {
-            user: req.user,
-            message: "You don't seem to have admin rights."
-        });
-    }
-    try {
-        const recipes = await Recipe.find().lean();
-        res.render('partials/recipeDB', { user: req.user, recipes: recipes });
-    } catch (error) {
-        console.error('Error fetching recipes:', error);
-        res.status(500).json({ error: 'Error fetching recipes' });
-    }
-});
-
-///////////////////////////////////////////////////////////////////////////////////////////
 // Register 
 router.get('/register', (req, res) => {
     res.render('partials/register');
@@ -233,14 +125,10 @@ router.get('/register_success', (req, res) => {
     res.render('partials/register_success');
 });
 
-// Update (client-side)
-router.get('/update_user', ensureAuthenticated, (req, res) => {
-    //    console.log(req.user);
-    res.render('partials/update_user', { user: req.user });
-});
-
-router.post('/logout', function (req, res, next) {
-    req.logout(function (err) {
+// passport.js vaatii että logoutille passataan callback!
+// https://stackoverflow.com/questions/72336177/error-reqlogout-requires-a-callback-function
+router.post('/logout', (req, res, next) => {
+    req.logout((err) => {
         if (err) { return next(err); }
         res.render('partials/logout');
     });
@@ -282,8 +170,16 @@ router.post('/register', (req, res) => {
     });
 });
 
+// Update (client-side)
+router.get('/update_user', ensureAuthenticated, (req, res) => {
+    //    console.log(req.user);
+    res.render('partials/update_user', { user: req.user, userToBeUpdated: req.user });
+});
+
 // Update user details (client-side)
-router.post('/update_user', (req, res) => {
+// purkkakoodia tähän väliin paremman puutteessa: 
+// :notNeeded lisätty tähän koska admin-puolen update_user -lomakeessa :id on välttämätön
+router.post('/update_user/:notNeeded', ensureAuthenticated, (req, res) => {
     const userId = req.user._id;
     const formData = req.body;
 
@@ -301,93 +197,6 @@ router.post('/update_user', (req, res) => {
         });
 });
 
-// Recipe database - delete a recipe
-router.post('/admin/recipes/delete/:id', async (req, res) => {
-    const recipeId = req.params.id;
-    try {
-        await Recipe.findByIdAndDelete(recipeId);
-        res.redirect('/admin/recipes');
-       // res.render('admin/user-deleted');
-    } catch (error) {
-        console.error('Error deleting recipe:', error);
-        res.status(500).send('Error deleting recipe. Please try again.');
-    }
-});
-
 let searchedRecipes = [];
-
-// Fetching recipe from Edamem api
-router.post('/searchrecipe', async (req, res) => {
-    try {
-        const { recipeName, numberOfRecipes } = req.body;
-
-        // Check that numberOfRecipes is a valid number between 1 and 10.
-        const num = parseInt(numberOfRecipes);
-        if (isNaN(num) || num < 1 || num > 10) {
-            return res.status(400).send('Number of recipes must be a valid number between 1 and 10.');
-        }
-
-        const response = await axios.get('https://api.edamam.com/search', {
-            params: {
-                q: recipeName,
-                app_id: process.env.EDAMAM_API_ID,
-                app_key: process.env.EDAMAM_API_KEY,
-                to: num //number of recipes
-            }
-        });
-
-        const recipesFromApi = response.data.hits.map(hit => ({
-            name: hit.recipe.label,
-            image: hit.recipe.image,
-            ingredients: hit.recipe.ingredientLines,
-            instruction: hit.recipe.shareAs,
-            cuisineType: hit.recipe.cuisineType,
-            mealType: hit.recipe.mealType,
-            dishType: hit.recipe.dishType
-         }));
-
-        // Save the retrieved recipes into the searchedRecipes variable
-        searchedRecipes = recipesFromApi;
-
-        res.render('partials/retrievedRecipes', { user: req.user, searchedRecipes: recipesFromApi });
-    }
-    catch (error) {
-        console.error('Error fetching recipe', error);
-        res.status(500).json({ error: 'Error fetching recipe' });
-    }
-});
-
-// Save the recipe to the database
-router.post('/saverecipe', async (req, res) => {
-    try {
-        const { name, image, ingredients, instruction, cuisineType, mealType, dishType } = req.body;
-
-        // Check if the recipe is already saved in the database
-        const existingRecipe = await Recipe.findOne({ name: name });
-        if (existingRecipe) {
-            return res.render('partials/retrievedRecipes', { errorMessage: 'Recipe already exists in the database.', searchedRecipes: searchedRecipes });
-        }
-
-        const savedRecipe = await Recipe.create({
-            name: name,
-            image: image,
-            ingredients: ingredients,
-            instruction: instruction,
-            cuisineType: cuisineType,
-            mealType: mealType,
-            dishType: dishType,
-        });
-
-        // Render same page with success message and saved recipe name
-        res.render('partials/retrievedRecipes', { 
-            searchedRecipes: searchedRecipes,
-            successMessage: `Recipe "${savedRecipe.name}" saved successfully!` 
-        });
-
-    } catch (error) {
-        console.error('Error saving recipe', error);
-        res.status(500).json({ error: 'Error saving recipe' });
-    }
-});
 
 module.exports = router;
