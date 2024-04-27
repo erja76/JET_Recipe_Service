@@ -1,0 +1,22 @@
+<div class="form-card">
+    <form id="addUserForm" action="/admin_add_user" method="POST">
+        <label for="name"><strong>Name:</strong></label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="email"><strong>Email:</strong></label>
+        <input type="email" id="email" name="email" required><br>
+
+        <label for="password"><strong>Password:</strong></label>
+        <input type="password" id="password" name="password" required><br>
+
+        <br>
+
+        <label><strong>Would you like to give this user admin rights?</strong></label><br>
+        <input type="radio" id="adminRightsYes" name="adminRights" value="true" required>
+        <label for="adminRightsYes">Yes</label>
+        <input type="radio" id="adminRightsNo" name="adminRights" value="false" required>
+        <label for="adminRightsNo">No</label><br>
+
+        <button type="submit"><strong>Add User</strong></button>
+    </form>
+</div>
