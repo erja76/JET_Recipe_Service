@@ -44,6 +44,7 @@
     </tr>
     {{/each}}
 </table>
+<br>
 
 <script>
     function confirmDelete() {
@@ -55,3 +56,18 @@
         }
     }
 </script>
+
+<br>
+<div>
+    <form action="/admin/users/search" method="get">
+        <input type="text" name="searchQuery" placeholder="Search user by name">
+        <button class="searchButton" type="submit"><strong>Search</strong></button>
+    </form>
+</div>
+<br>
+
+<div>
+    <a href="/admin_add_user" id="userAddLink"><button class="addButton" type="submit"><strong>Add a new
+                user</strong></button></a>
+</div>
+<br>

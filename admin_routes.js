@@ -19,8 +19,6 @@ const ensureAdmin = (req, res, next) => {
 
 // Admin 
 router.get('/admin', ensureAdmin, (req, res) => {
-    //    console.log("get admin");
-    //    console.log(req.user);
     res.render('partials/admin', { user: req.user });
 });
 
@@ -96,6 +94,43 @@ router.post('/admin_update_user/:id', ensureAdmin, async (req, res) => {
         res.status(500).send('Error updating user. Please try again.');
     }
 });
+
+// User database - add a new user (server-side)
+router.get('/admin_add_user', ensureAdmin, (req, res) => {
+    res.render('partials/admin_add_user');
+});
+
+router.post('/admin_add_user', ensureAdmin, async (req, res) => {
+    try {
+        const formData = req.body;
+        const newUser = new User({
+            name: formData.name,
+            email: formData.email,
+            adminRights: formData.adminRights === 'true',
+        });
+        await newUser.save();
+
+        console.log('User added successfully:', newUser);
+        res.render('partials/user_added', { user: req.user, addedUserName: formData.name });
+    } catch (error) {
+        console.error('Error adding user:', error);
+        res.status(500).send('Error adding user. Please try again.');
+    }
+});
+
+// User database - search for a user by name (server-side)
+router.get('/admin/users/search', ensureAdmin, async (req, res) => {
+    const searchQuery = req.query.searchQuery;
+    try {
+        // $regex finds the match; i ensures a case-insensitive search
+        const users = await User.find({ name: { $regex: new RegExp(searchQuery, 'i') } }).lean();
+        res.render('partials/userDB', { user: req.user, users: users, searchQuery: searchQuery });
+    } catch (error) {
+        console.error('Error searching for user:', error);
+        res.status(500).send('Error searching for user. Please try again.');
+    }
+});
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // TÄMÄ ON VIELÄ VÄHÄN KESKEN... 

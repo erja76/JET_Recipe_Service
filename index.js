@@ -20,6 +20,7 @@ app.use(session({
     secret: "secret",
     resave: false,
     saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 } // Session length: 1 hour
 }))
 
 // Middleware
