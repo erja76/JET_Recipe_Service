@@ -98,8 +98,8 @@ router.post('/admin_update_user/:id', ensureAdmin, async (req, res) => {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// TÄMÄ ON VIELÄ HYVIN KESKEN.....
-// User database - list all recipes (server-side)
+// TÄMÄ ON VIELÄ VÄHÄN KESKEN... 
+// Recipe database - list all recipes (server-side)
 router.get('/admin/recipes', ensureAdmin, async (req, res) => {
     try {
         const recipes = await Recipe.find().lean();
@@ -109,16 +109,19 @@ router.get('/admin/recipes', ensureAdmin, async (req, res) => {
         res.status(500).json({ error: 'Error fetching recipes' });
     }
 });
-
 ///////////////////////////////////////////////////////////////////////////////////////////
 
-// Recipe database - delete a recipe
+// Recipe database - delete a recipe (server-side)
 router.post('/admin/recipes/delete/:id', ensureAdmin, async (req, res) => {
     const recipeId = req.params.id;
     try {
+        const recipe = await Recipe.findById(recipeId);
+        if (!recipe) {
+            return res.status(404).send('Recipe not found');
+        }
+        const thisRecipeName = recipe.name;
         await Recipe.findByIdAndDelete(recipeId);
-        res.redirect('/admin/recipes');
-        // res.render('admin/user-deleted');
+        res.render('partials/recipe_deleted', { user: req.user, deletedRecipeName: thisRecipeName });
     } catch (error) {
         console.error('Error deleting recipe:', error);
         res.status(500).send('Error deleting recipe. Please try again.');
@@ -176,7 +179,7 @@ router.post('/saverecipe', ensureAdmin, async (req, res) => {
         // Check if the recipe is already saved in the database
         const existingRecipe = await Recipe.findOne({ name: name });
         if (existingRecipe) {
-            return res.render('partials/retrievedRecipes', { errorMessage: 'Recipe already exists in the database.', searchedRecipes: searchedRecipes });
+            return res.render('partials/retrievedRecipes', { user: req.user, errorMessage: 'Recipe already exists in the database.', searchedRecipes: searchedRecipes });
         }
 
         const savedRecipe = await Recipe.create({
@@ -191,6 +194,7 @@ router.post('/saverecipe', ensureAdmin, async (req, res) => {
 
         // Render same page with success message and saved recipe name
         res.render('partials/retrievedRecipes', {
+            user: req.user,
             searchedRecipes: searchedRecipes,
             successMessage: `Recipe "${savedRecipe.name}" saved successfully!`
         });
