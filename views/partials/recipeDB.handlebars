@@ -23,9 +23,9 @@
         <td>{{mealType}}</td>
         <td>{{dishType}}</td>
         <td>
-            <form class="deleteColumn" action="/admin/recipes/delete/{{this._id}}" method="post">
+            <form class="deleteColumn" action="/admin/recipes/delete/{{_id}}" method="post" onsubmit="return confirm('Are you sure you want to delete the recipe {{name}}?');">
                 <button type="submit">Delete</button>
-            </form>
+        </form>
         </td>
     </tr>
     {{/each}}
@@ -45,7 +45,9 @@
 </div>
 {{/each}} --}}
 <br>
+
 <h3>Search recipes from API</h3>
+
 <div class="form-card">
     <form action="/saverecipe" method="post">
         <label for="recipeName"><strong>Recipe Name: </strong></label>

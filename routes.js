@@ -5,26 +5,9 @@ const User = require('./models/user');
 const Recipe = require('./models/recipes');
 const axios = require('axios');
 const flash = require('connect-flash');
+const { path } = require('.');
 const router = express.Router();
 
-let recipeTest = [{
-    name: "Nimi",
-    cuisineType: ["Meal"],
-    mealType: ["main"],
-    dishType: ["dish"],
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_Hx9Ia-7_kc_EuexOf6N7uWDK_a4IChlTIZeWsuB9A&s",
-    ingredients: ["fish", "rice", "carrot"],
-    instruction: "Stir and cook!"
-},
-{
-    name: "Nimi",
-    cuisineType: ["Meal"],
-    mealType: ["main"],
-    dishType: ["dish"],
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo_Hx9Ia-7_kc_EuexOf6N7uWDK_a4IChlTIZeWsuB9A&s",
-    ingredients: ["fish", "rice", "carrot"],
-    instruction: "Stir and cook!"
-}]
 
 
 // Front page
@@ -84,7 +67,42 @@ router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
     catch (error) {
         console.log(error)
     }
-});
+
+
+})
+
+router.get('/search', async (req, res) => {
+    const q = {}
+    q = req.query.map(item => {
+        if (item.lenght) {
+            return item
+        }
+    })
+    console.log(req.query)
+    try {
+        const recipes = await Recipe.find({
+            cuisineType: { $in: q.cuisineType },
+            mealType: { $in: q.mealType },
+            dishType: { $in: q.dishType },
+            ingredients: { $in: q.ingredients },
+            name: q.name
+
+        })
+            .lean()
+
+        res.render("partials/user_dashboard",
+            {
+                user: req.user,
+                recipes: recipes
+            }
+        )
+    }
+    catch (error) {
+        console.log(error)
+    }
+
+
+})
 
 // Middleware to ensure user is authenticated (passport.js-kirjaston oma työkalu)
 function ensureAuthenticated(req, res, next) {
@@ -291,6 +309,19 @@ router.post('/update_user', (req, res) => {
         });
 });
 
+// Recipe database - delete a recipe
+router.post('/admin/recipes/delete/:id', async (req, res) => {
+    const recipeId = req.params.id;
+    try {
+        await Recipe.findByIdAndDelete(recipeId);
+        res.redirect('/admin/recipes');
+        // res.render('admin/user-deleted');
+    } catch (error) {
+        console.error('Error deleting recipe:', error);
+        res.status(500).send('Error deleting recipe. Please try again.');
+    }
+});
+
 let searchedRecipes = [];
 
 // Fetching recipe from Edamem api
@@ -323,6 +354,9 @@ router.post('/searchrecipe', async (req, res) => {
             dishType: hit.recipe.dishType
         }));
 
+        // Save the retrieved recipes into the searchedRecipes variable
+        searchedRecipes = recipesFromApi;
+
         res.render('partials/retrievedRecipes', { user: req.user, searchedRecipes: recipesFromApi });
     }
     catch (error) {
@@ -336,6 +370,12 @@ router.post('/saverecipe', async (req, res) => {
     try {
         const { name, image, ingredients, instruction, cuisineType, mealType, dishType } = req.body;
 
+        // Check if the recipe is already saved in the database
+        const existingRecipe = await Recipe.findOne({ name: name });
+        if (existingRecipe) {
+            return res.render('partials/retrievedRecipes', { errorMessage: 'Recipe already exists in the database.', searchedRecipes: searchedRecipes });
+        }
+
         const savedRecipe = await Recipe.create({
             name: name,
             image: image,
@@ -346,7 +386,11 @@ router.post('/saverecipe', async (req, res) => {
             dishType: dishType,
         });
 
-        res.json(savedRecipe);
+        // Render same page with success message and saved recipe name
+        res.render('partials/retrievedRecipes', {
+            searchedRecipes: searchedRecipes,
+            successMessage: `Recipe "${savedRecipe.name}" saved successfully!`
+        });
 
     } catch (error) {
         console.error('Error saving recipe', error);
