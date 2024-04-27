@@ -72,10 +72,24 @@ router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
 })
 
 router.get('/search', async (req, res) => {
-    const param = req.params[0]
+    const q = {}
+    q = req.query.map(item => {
+        if(item.lenght) {
+            return item
+        }
+    })
+    console.log(req.query)
     try{
-        const recipes = await Recipe.find({cuisineType: param}).lean()
-        console.log(recipes)
+        const recipes = await Recipe.find({
+            cuisineType: { $in: q.cuisineType },
+            mealType: { $in: q.mealType },
+            dishType: { $in: q.dishType },
+            ingredients: { $in: q.ingredients },
+            name: q.name
+
+            })
+        .lean()
+
         res.render("partials/user_dashboard",
             {
                 user: req.user,
@@ -111,7 +125,6 @@ router.get('/admin', (req, res) => {
 
 // Recipes fetched from Api
 router.get('/retrievedRecipes', (req, res) => {
-  
     res.render('partials/retrievedRecipes', { searchedRecipes: searchedRecipes });
 });
 
