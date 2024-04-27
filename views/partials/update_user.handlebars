@@ -1,17 +1,17 @@
 <div class="form-card">
-    <form id="updateForm" action="/update_user" method="POST">
+    <form id="updateForm" action="/update_user/{{userToBeUpdated._id}}" method="POST">
         <label for="name"><strong>Name:</strong></label>
-        <strong>{{user.name}}</strong><br>
+        <strong>{{userToBeUpdated.name}}</strong><br>
         <br>
         <label for="password"><strong>Password:</strong></label>
         <input type="text" name="password" placeholder="New password"><br>
         <br>
         <label for="email"><strong>Email:</strong></label>
-        <strong>{{user.email}}</strong><br>
+        <strong>{{userToBeUpdated.email}}</strong><br>
         <br>
 
         {{#if showPasswordInput}}
-        <input type="hidden" name="password" value="{{user.password}}">
+        <input type="hidden" name="password" value="{{userToBeUpdated.password}}">
         {{/if}}
 
         {{> user_preferences}}

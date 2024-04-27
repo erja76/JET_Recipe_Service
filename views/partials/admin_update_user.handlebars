@@ -1,5 +1,5 @@
 <div class="form-card">
-    <form id="updateForm" action="/admin_update_user" method="POST">
+    <form id="updateForm" action="/admin_update_user/{{userToBeUpdated._id}}" method="POST">
         <label for="name"><strong>Name:</strong></label>
         <input type="text" name="name" placeholder="{{userToBeUpdated.name}}" value="{{userToBeUpdated.name}}"><br>
         <br>
