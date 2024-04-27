@@ -71,7 +71,7 @@ async function getRecipes(params = "") {
 
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
-    try{
+    try {
         const recipes = await Recipe.find().lean()
         console.log(recipes)
         res.render("partials/user_dashboard",
@@ -84,19 +84,9 @@ router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
     catch (error) {
         console.log(error)
     }
+});
 
-
-})
-
-
-
-
-
-
-
-
-
-// Middleware to ensure user is authenticated
+// Middleware to ensure user is authenticated (passport.js-kirjaston oma työkalu)
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -104,14 +94,19 @@ function ensureAuthenticated(req, res, next) {
     res.render('partials/login', { message: 'Please log in to view this resource!' });
 }
 
-// Admin 
-router.get('/admin', (req, res) => {
-    if (req.user == null || req.user.adminRights === false) {
-        res.render('partials/index', {
-            user: req.user,
-            message: "You don't seem to have admin rights."
-        });
+// Middleware to ensure user is registered AND is admin user
+// (Omatekoinen työkalu, otettu mallia tuosta passport-kirjaston työkalusta)
+function ensureAdmin(req, res, next) {
+    if (req.user !== undefined && req.user.adminRights === true) {
+        return next();
     }
+    res.render('partials/index', { user: req.user, message: "You don't have admin rights." });
+}
+
+// Admin 
+router.get('/admin', ensureAdmin, (req, res) => {
+    console.log("get admin");
+    console.log(req.user);
     res.render('partials/admin', { user: req.user });
 });
 
@@ -121,7 +116,6 @@ router.get('/retrievedRecipes', (req, res) => {
 });
 
 // User database - list all users (server-side)
-
 router.get('/admin/users', async (req, res) => {
     if (req.user == null || req.user.adminRights === false) {
         return res.render('partials/index', {
@@ -145,9 +139,13 @@ router.get('/admin/users', async (req, res) => {
 router.post('/admin/users/delete/:id', async (req, res) => {
     const userId = req.params.id;
     try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+        const userName = user.name;
         await User.findByIdAndDelete(userId);
-        res.redirect('/admin/users');
-        //res.render('admin/user-deleted');
+        res.render('partials/user_deleted', { user: req.user, deletedUserName: userName });
     } catch (error) {
         console.error('Error deleting user:', error);
         res.status(500).send('Error deleting user. Please try again.');
@@ -158,8 +156,8 @@ router.post('/admin/users/delete/:id', async (req, res) => {
 router.get('/admin_update_user/:id', async (req, res) => {
     const userId = req.params.id;
     try {
-        const user = await User.findById(userId).lean();
-        res.render('partials/admin_update_user', { user });
+        const userToBeUpdated = await User.findById(userId).lean();
+        res.render('partials/admin_update_user', { user: req.user, userToBeUpdated });
     } catch (error) {
         console.error('Error fetching user for update:', error);
         res.status(500).send('Error fetching user for update. Please try again.');
@@ -167,9 +165,9 @@ router.get('/admin_update_user/:id', async (req, res) => {
 });
 
 // Update user details in the user database (server-side)
-router.post('/admin_update_user', async (req, res) => {
+router.post('/admin_update_user/:id', async (req, res) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.params.id;
         const formData = req.body;
 
         let updateFields = {
@@ -323,9 +321,9 @@ router.post('/searchrecipe', async (req, res) => {
             cuisineType: hit.recipe.cuisineType,
             mealType: hit.recipe.mealType,
             dishType: hit.recipe.dishType
-         }));
+        }));
 
-        res.render('partials/retrievedRecipes', { searchedRecipes: recipesFromApi });
+        res.render('partials/retrievedRecipes', { user: req.user, searchedRecipes: recipesFromApi });
     }
     catch (error) {
         console.error('Error fetching recipe', error);

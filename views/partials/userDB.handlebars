@@ -35,10 +35,23 @@
                     type="submit">Update</button></a>
         </td>
         <td>
-            <form class="deleteColumn" action="/admin/users/delete/{{_id}}" method="post">
+            <form class="deleteColumn" action="/admin/users/delete/{{_id}}" method="post"
+                onsubmit="return confirmDelete()">
                 <button type="submit">Delete</button>
             </form>
+
         </td>
     </tr>
     {{/each}}
 </table>
+
+<script>
+    function confirmDelete() {
+        var confirmation = confirm("Are you sure you want to delete this user?");
+        if (confirmation) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>

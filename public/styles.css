@@ -96,24 +96,22 @@ main {
     padding-left: 160px;
 }
 
-.error-box {
-    border: 2px solid black;
-    padding: 10px;
-    margin-bottom: 15px;
-}
-
 .error-box p {
-    color: red;
     margin: 0;
+    color: red;
     border: 2px solid black;
-    padding: 10px;
+    padding: 15px;
     margin-bottom: 15px;
 }
 
-#error {
-    border: 2px solid black;
-    padding: 10px;
-    margin-bottom: 15px;
+.indexerror {
+    color: red; 
+    border: 2px solid black; 
+    padding: 15px; 
+    margin-top: 30px;
+    margin-bottom: 15px; 
+    width: 200px;
+    margin: auto;
 }
 
 footer {

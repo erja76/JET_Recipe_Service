@@ -1,20 +1,28 @@
 <div class="form-card">
     <form id="updateForm" action="/admin_update_user" method="POST">
         <label for="name"><strong>Name:</strong></label>
-        <input type="text" name="name" placeholder="{{user.name}}" value="{{user.name}}"><br>
+        <input type="text" name="name" placeholder="{{userToBeUpdated.name}}" value="{{userToBeUpdated.name}}"><br>
         <br>
         <label for="password"><strong>Password:</strong></label>
         <input type="text" name="password" placeholder="New password"><br>
         <br>
         <label for="email"><strong>Email:</strong></label>
-        <input type="email" name="email" placeholder="{{user.email}}" value="{{user.email}}"><br>
+        <input type="email" name="email" placeholder="{{userToBeUpdated.email}}" value="{{userToBeUpdated.email}}"><br>
         <br>
 
         {{#if showPasswordInput}}
-        <input type="hidden" name="password" value="{{user.password}}">
+        <input type="hidden" name="password" value="{{userToBeUpdated.password}}">
         {{/if}}
 
         {{> user_preferences}}
+
+        <label><strong>Would you like to give this user admin rights?</strong></label><br>
+        <input type="radio" id="adminRightsYes" name="adminRights" value="true" {{#ifEqual userToBeUpdated.adminRights
+            true }}checked{{/ifEqual}} required>
+        <label for="adminRightsYes">Yes</label>
+        <input type="radio" id="adminRightsNo" name="adminRights" value="false" {{#ifEqual userToBeUpdated.adminRights
+            false }}checked{{/ifEqual}} required>
+        <label for="adminRightsNo">No</label><br>
 
         <input type="hidden" name="userId" value="{{user._id}}">
 

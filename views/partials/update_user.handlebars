@@ -4,11 +4,15 @@
         <strong>{{user.name}}</strong><br>
         <br>
         <label for="password"><strong>Password:</strong></label>
-        <strong> ******</strong><br>
+        <input type="text" name="password" placeholder="New password"><br>
         <br>
         <label for="email"><strong>Email:</strong></label>
         <strong>{{user.email}}</strong><br>
         <br>
+
+        {{#if showPasswordInput}}
+        <input type="hidden" name="password" value="{{user.password}}">
+        {{/if}}
 
         {{> user_preferences}}
 
