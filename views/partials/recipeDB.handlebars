@@ -4,7 +4,7 @@
     <tr>
         <th>ID</th>
         <th>Name</th>
-        <!--    <th>Image</th>    -->
+        <th>Image</th>
         <th>Ingredients</th>
         <th>Instruction</th>
         <th>Cuisine Type</th>
@@ -16,7 +16,7 @@
     <tr>
         <td>{{_id}}</td>
         <td>{{name}}</td>
-        <!--    <td>{{image}}</td>    -->
+        <td><img src="{{ image }}" class="recipeListImage" alt="Recipe image"></td>
         <td>{{ingredients}}</td>
         <td>{{instruction}}</td>
         <td>{{cuisineType}}</td>
@@ -34,7 +34,7 @@
 
 <br>
 
-{{!-- {{#each recipes}}
+{{#each recipes}}
 <div class="recipe-card">
     <h2>{{this.name}}</h2>
     <img src="{{this.image}}" alt="{{this.name}}">
@@ -44,7 +44,7 @@
         <button type="submit">Delete</button>
     </form>
 </div>
-{{/each}} --}}
+{{/each}}
 <br>
 
 <h3>Search recipes from API</h3>
@@ -56,5 +56,70 @@
         <label for="recipeNumber"><strong>Recipe Number: </strong></label>
         <input type="number" id="recipeNumber" name="recipeNumber" required><br><br>
         <button type="submit"><strong>Save Recipe</strong></button>
+    </form>
+</div>
+
+
+<div class="form-card">
+    <form id="recipeSearchForm" action="/recipeDB" method="GET">
+        <select name="cuisineType" id="cuisineType">
+            <option value="">Search recipes by cuisine type</option>
+            <option value="American">American</option>
+            <option value="Asian">Asian</option>
+            <option value="British">British</option>
+            <option value="Caribbean">Caribbean</option>
+            <option value="Central Europe">Central Europe</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Eastern Europe">Eastern Europe</option>
+            <option value="French">French</option>
+            <option value="Indian">Indian</option>
+            <option value="Italian">Italian</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Kosher">Kosher</option>
+            <option value="Mediterranean">Mediterranean</option>
+            <option value="Mexican">Mexican</option>
+            <option value="Middle Eastern">Middle Eastern</option>
+            <option value="Nordic">Nordic</option>
+            <option value="South American">South American</option>
+            <option value="South East Asian">South East Asian</option>
+        </select>
+
+        <br>
+        <select name="mealType" id="mealType">
+            <option value="">Search recipes by meal type</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Dinner">Dinner</option>
+            <option value="Snack">Snack</option>
+            <option value="Teatime">Teatime</option>
+        </select>
+
+        <br>
+        <select name="dishType" id="dishType">
+            <option value="">Search recipes by dish type</option>
+            <option value="Biscuits and cookies">Biscuits and cookies</option>
+            <option value="Bread">Bread</option>
+            <option value="Cereals">Cereals</option>
+            <option value="Condiments and sauces">Condiments and sauces</option>
+            <option value="Desserts">Desserts</option>
+            <option value="Drinks">Drinks</option>
+            <option value="Main course">Main course</option>
+            <option value="Pancake">Pancake</option>
+            <option value="Preps">Preps</option>
+            <option value="Preserve">Preserve</option>
+            <option value="Salad">Salad</option>
+            <option value="Sandwiches">Sandwiches</option>
+            <option value="Side dish">Side dish</option>
+            <option value="Soup">Soup</option>
+            <option value="Starter">Starter</option>
+            <option value="Sweets">Sweets</option>
+        </select>
+
+        <br>
+        <input type="text" placeholder="Search recipes by ingredient" name="ingredients">
+        <br>
+        <input type="text" placeholder="Search recipes by name" name="name">
+        <br>
+        <button type="submit">Search</button>
     </form>
 </div>

@@ -175,7 +175,7 @@ form button {
     margin-top: 20px; 
 }
 
-.admin-form-card {
+.admin-form-card, .back-to-search-card {
     width: 250px;
     height: 70px;
     padding-top: 35px;
@@ -186,7 +186,7 @@ form button {
     background-color: bisque;
 }
 
-.admin-form-card a {
+.admin-form-card a, .back-to-search-card a {
     font-size: x-large;
     margin-top: 50px;
     align-content: center;
@@ -274,6 +274,10 @@ form button {
     margin-bottom: 0.5rem; 
 }
 
+.no {
+    margin: auto;
+}
+
 #user-table.table {
     margin: auto;
     margin-bottom: 30px;
@@ -341,13 +345,17 @@ td img {
     background-color: #cfc7c7;
   } 
 
-
 #recipe-table {
     margin: auto;
-    width: 90%;
+    width: 95%;
     margin-bottom: 30px;
 }
 
 #recipe-table td {
-    padding: 10px;
+    padding: 8px;
+}
+
+.recipeListImage {
+    height: 120px;
+    width: 160px;
 }

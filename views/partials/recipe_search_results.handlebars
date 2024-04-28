@@ -1,0 +1,51 @@
+<h1>These recipes matched your search:</h1>
+<br>
+
+<section class="recipe-section">
+    {{#if recipes.length}}
+    {{#each recipes}}
+    <div class="recipe-card">
+        <img src="{{ this.image }}" alt="Recipe image">
+        <h2>{{ this.name }}</h2>
+        <h3>Ingredients</h3>
+        <ul>
+            {{#each this.ingredients}}
+            <li>{{ this }}</li>
+            {{/each}}
+        </ul>
+        <h3>Instructions</h3>
+        {{#if this.instruction}}
+        <a href="{{ this.instruction }}" target="_blank">{{ this.instruction }}</a>
+        {{else}}
+        <p>No instructions available</p>
+        {{/if}}
+        <h3>Cuisine Type</h3>
+        <ul>
+            {{#each this.cuisineType}}
+            <li>{{ this }}</li>
+            {{/each}}
+        </ul>
+        <h3>Meal Type</h3>
+        <ul>
+            {{#each this.mealType}}
+            <li>{{ this }}</li>
+            {{/each}}
+        </ul>
+        <h3>Dish Type</h3>
+        <ul>
+            {{#each this.dishType}}
+            <li>{{ this }}</li>
+            {{/each}}
+        </ul>
+    </div>
+    {{/each}}
+    {{else}}
+    <p class="no">No recipes found.</p>
+    {{/if}}
+</section>
+
+<br>
+
+<div class="back-to-search-card">
+    <a href="/" class="button">Back to recipe search</a>
+</div>
