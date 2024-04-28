@@ -175,7 +175,7 @@ form button {
     margin-top: 20px; 
 }
 
-.admin-form-card, .back-to-search-card {
+.admin-form-card, .back-to-button {
     width: 250px;
     height: 70px;
     padding-top: 35px;
@@ -186,7 +186,7 @@ form button {
     background-color: bisque;
 }
 
-.admin-form-card a, .back-to-search-card a {
+.admin-form-card a, .back-to-button a {
     font-size: x-large;
     margin-top: 50px;
     align-content: center;

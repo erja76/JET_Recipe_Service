@@ -95,7 +95,6 @@ async function getRecipes(params = "") {
     }
 }
 
-// *** PALAUTA KAIKKI TÄMÄ ***
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
     try {
