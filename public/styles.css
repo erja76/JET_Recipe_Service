@@ -178,7 +178,8 @@ form button {
 .admin-form-card, .back-to-button {
     width: 250px;
     height: 70px;
-    padding-top: 35px;
+    padding-top: 30px;
+    padding-bottom: 15px;
     margin: 40px auto; 
     border: 5px solid #666363; 
     border-radius: 10px;
@@ -188,7 +189,7 @@ form button {
 
 .admin-form-card a, .back-to-button a {
     font-size: x-large;
-    margin-top: 50px;
+    margin-top: 20px;
     align-content: center;
     font-weight: bolder;
     vertical-align: middle;
@@ -331,6 +332,20 @@ td img {
     font-size: 16px;
     border: 3px solid #666363;
     cursor: pointer;
+    align-content: center;
+    font-weight: bolder;
+    vertical-align: middle;
+    padding-top: 10px;
+    margin-right: 20px;
+}
+
+.saveButton, .faveButton {
+    width: 120px;
+    height: 90px;
+    font-size: 16px;
+    border: 3px solid #666363;
+    cursor: pointer;
+    justify-content: center;
 }
 
 .addButton {

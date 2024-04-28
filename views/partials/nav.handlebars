@@ -4,10 +4,8 @@
             <h2 class="home"><a href="/">JET Recipe Service</a></h2>
         </li>
         {{#if user}}
-        <li>
-            {{#if user.adminRights}}
-            <a href="/admin" id="adminDashboardLink"><button>Admin Dashboard</button></a>
-        </li>
+        {{#if user.adminRights}}
+        <li><a href="/admin" id="adminDashboardLink"><button>Admin Dashboard</button></a></li>
         <li><a href="/user_dashboard" id="userDashboardLink"><button>User Dashboard</button></a></li>
         {{else}}
         <li><a href="/user_dashboard" id="userDashboardLink"><button>User Dashboard</button></a></li>
