@@ -46,16 +46,13 @@ Handlebars.registerHelper('ifIn', function (elem, list = [], options) {
     return options.inverse(this);
 });
 
-
-
 // Passport Configuration
 authUser = async (username, password, done) => {
     const user = await User.findOne({ email: username });
-    console.log(user);
+    // console.log(user);
     // 1. If the user not found, done (null, false)
     if (user === null) {
         return done(null, false, { message: 'Incorrect email.' });
-        //      return done(null, false, req.flash('message', 'Incorrect email.'));
     }
     bcrypt.compare(password, user.password, (err, res) => {
         if (err) { return done(err); }
@@ -69,11 +66,13 @@ authUser = async (username, password, done) => {
     });
 }
 
+// Local authentication verifies credentials (username & password) against local database
 passport.use(new LocalStrategy({ usernameField: 'email' }, authUser));
-
+// käyttäjäobjekti muunnetaan tiettyyn muotoon (yleensä ID) joka tallennetaan sessiokeksiin
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
+// tallennettu käyttäjätunniste muunnetaan takaisin käyttäjäobjektiksi
 passport.deserializeUser(async (id, done) => {
     const user = await User.findById(id).lean();
     done(null, user);

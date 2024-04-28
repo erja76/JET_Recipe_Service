@@ -5,7 +5,7 @@ const User = require('./models/user');
 const Recipe = require('./models/recipes');
 const axios = require('axios');
 const flash = require('connect-flash');
-const { path } = require('.');
+// const { path } = require('.');
 const router = express.Router();
 
 
@@ -18,7 +18,8 @@ const ensureAdmin = (req, res, next) => {
 }
 
 // Admin 
-router.get('/admin', ensureAdmin, (req, res) => {
+router.get('/admin', (req, res) => {
+    //    router.get('/admin', ensureAdmin, (req, res) => {
     res.render('partials/admin', { user: req.user });
 });
 
@@ -135,7 +136,8 @@ router.get('/admin/users/search', ensureAdmin, async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // TÄMÄ ON VIELÄ VÄHÄN KESKEN... 
 // Recipe database - list all recipes (server-side)
-router.get('/admin/recipes', ensureAdmin, async (req, res) => {
+router.get('/admin/recipes', async (req, res) => {
+    //    router.get('/admin/recipes', ensureAdmin, async (req, res) => {
     try {
         const recipes = await Recipe.find().lean();
         res.render('partials/recipeDB', { user: req.user, recipes: recipes });

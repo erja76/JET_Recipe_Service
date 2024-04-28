@@ -5,7 +5,7 @@ const User = require('./models/user');
 const Recipe = require('./models/recipes');
 const axios = require('axios');
 const flash = require('connect-flash');
-const { path } = require('.');
+// const { path } = require('.');
 const router = express.Router();
 
 
@@ -22,6 +22,42 @@ const ensureAuthenticated = (req, res, next) => {
 router.get('/', (req, res) => {
     res.render('partials/index', { user: req.user });
 });
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Front page recipe search for unregistered users
+router.get('/search', async (req, res) => {
+    try {
+        // Initializing an empty query object
+        let query = {};
+
+        // RegExp = a pattern used to match certain character combinations in strings
+        if (req.query.name) {
+            query.name = new RegExp(req.query.name, 'i');
+            // eli query = { name: RegExp(...) }
+        }
+        if (req.query.ingredients) {
+            query.ingredients = new RegExp(req.query.ingredients, 'i')
+        }
+        if (req.query.cuisineType) {
+            query.cuisineType = new RegExp(req.query.cuisineType, 'i');
+        }
+        if (req.query.mealType) {
+            query.mealType = new RegExp(req.query.mealType, 'i');
+        }
+        if (req.query.dishType) {
+            query.dishType = new RegExp(req.query.dishType, 'i');
+        }
+
+        console.log("Constructed query:", query);
+        const recipes = await Recipe.find(query).lean();
+        console.log(recipes);
+        res.render('partials/recipe_search_results', { recipes: recipes });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error retrieving the recipes. Please try again.');
+    }
+});
+////////////////////////////////////////////////////////////////////////////////////////
 
 // Login 
 router.get('/login', (req, res) => {
@@ -59,6 +95,7 @@ async function getRecipes(params = "") {
     }
 }
 
+// *** PALAUTA KAIKKI TÄMÄ ***
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
     try {
@@ -67,21 +104,19 @@ router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
         res.render("partials/user_dashboard",
             {
                 user: req.user,
-                recipes: recipes
+                //                recipes: recipes
             }
         )
     }
     catch (error) {
         console.log(error)
     }
-
-
 })
 
 router.get('/search', async (req, res) => {
     const q = {}
     q = req.query.map(item => {
-        if (item.lenght) {
+        if (item.length) {
             return item
         }
     })
