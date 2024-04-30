@@ -17,6 +17,11 @@ const ensureAdmin = (req, res, next) => {
     res.status(403).render('partials/index', { user: req.user, message: "You don't seem to have admin rights." });
 }
 
+// Recipes fetched from Api
+router.get('/retrievedRecipes', (req, res) => {
+    res.render('partials/retrievedRecipes', { searchedRecipes: searchedRecipes });
+});
+
 // Admin 
 router.get('/admin', (req, res) => {
     //    router.get('/admin', ensureAdmin, (req, res) => {
@@ -131,12 +136,9 @@ router.get('/admin/users/search', ensureAdmin, async (req, res) => {
         res.status(500).send('Error searching for user. Please try again.');
     }
 });
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// TÄMÄ ON VIELÄ VÄHÄN KESKEN... 
+ 
 // Recipe database - list all recipes (server-side)
-router.get('/admin/recipes', async (req, res) => {
+router.get('/admin/recipes', ensureAdmin, async (req, res) => {
     //    router.get('/admin/recipes', ensureAdmin, async (req, res) => {
     try {
         const recipes = await Recipe.find().lean();
@@ -146,7 +148,6 @@ router.get('/admin/recipes', async (req, res) => {
         res.status(500).json({ error: 'Error fetching recipes' });
     }
 });
-///////////////////////////////////////////////////////////////////////////////////////////
 
 // Recipe database - delete a recipe (server-side)
 router.post('/admin/recipes/delete/:id', ensureAdmin, async (req, res) => {
@@ -162,6 +163,78 @@ router.post('/admin/recipes/delete/:id', ensureAdmin, async (req, res) => {
     } catch (error) {
         console.error('Error deleting recipe:', error);
         res.status(500).send('Error deleting recipe. Please try again.');
+    }
+});
+
+// Recipe database -update recipe
+router.get('/admin_update_recipe/:id', ensureAdmin, async (req, res) => {
+    const recipeId = req.params.id;
+    try {
+        const recipeToBeUpdated = await Recipe.findById(recipeId).lean();
+        res.render('partials/admin_update_recipe', { user: req.user, recipeToBeUpdated });
+    } catch (error) {
+        console.error('Error fetching recipe for update:', error);
+        res.status(500).send('Error fetching recipe for update. Please try again.');
+    }
+});
+
+// Save updated recipe to db
+router.post('/admin_update_recipe/:id', ensureAdmin, async (req, res) => {
+    try {
+        const recipeId = req.params.id;
+        const formData = req.body;
+
+        const updatedFields = {
+            name: formData.name,
+            image: formData.image,
+            ingredients: formData.ingredients,
+            instruction: formData.instruction,
+            cuisineType: formData.cuisineType,
+            mealType: formData.mealType,
+            dishType: formData.dishType,
+        };
+
+        const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, updatedFields, { new: true });
+
+        console.log('Recipe updated successfully:', updatedRecipe);
+        res.redirect('/admin/recipes');
+    } catch (error) {
+        console.error('Error updating recipe:', error);
+        res.status(500).send('Error updating recipe. Please try again.');
+    }
+});
+
+//Search chosen recipes from db
+router.post('/searchRecipesDB', ensureAdmin, async (req, res) => {
+    try {
+         // Initializing an empty query object
+         let query = {};
+
+         // RegExp = a pattern used to match certain character combinations in strings
+         if (req.body.name) {
+             query.name = new RegExp(req.body.name, 'i');
+         }
+         if (req.body.ingredients) {
+             query.ingredients = new RegExp(req.body.ingredients, 'i')
+         }
+         if (req.body.cuisineType) {
+             query.cuisineType = new RegExp(req.body.cuisineType, 'i');
+         }
+         if (req.body.mealType) {
+             query.mealType = new RegExp(req.body.mealType, 'i');
+         }
+         if (req.body.dishType) {
+             query.dishType = new RegExp(req.body.dishType, 'i');
+         }
+ 
+         console.log("Constructed query:", query);
+         const recipes = await Recipe.find(query).lean();
+
+        res.json({ recipes: recipes });
+    } 
+    catch (error) {
+        console.error('Error searching for recipes:', error);
+        res.status(500).json({ error: 'Error searching for recipes' });
     }
 });
 
