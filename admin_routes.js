@@ -1,4 +1,5 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
@@ -7,6 +8,7 @@ const axios = require('axios');
 const flash = require('connect-flash');
 // const { path } = require('.');
 const router = express.Router();
+
 
 
 // Middleware to ensure user is registered AND is admin user
@@ -71,8 +73,20 @@ router.get('/admin_update_user/:id', ensureAdmin, async (req, res) => {
 });
 
 // Update user details in the user database (server-side)
-router.post('/admin_update_user/:id', ensureAdmin, async (req, res) => {
+    //express valdation added to name, email and password
+router.post('/admin_update_user/:id', ensureAdmin, [
+    body('name').notEmpty().withMessage('Name is required').trim().escape(), //Escape poistaa HTML ja Javascript koodin
+    body('email').isEmail().withMessage('Invalid email').normalizeEmail(),  //muuttaa emailin kirjaimet pieniksi ja poistaa ylimääräiset välilyonnit
+    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape()],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const userId = req.params.id;
+            const userToBeUpdated = await User.findById(userId).lean(); //Fetching the details of the user to be updated
+            return res.render('partials/admin_update_user', {user: req.user, userToBeUpdated: userToBeUpdated, errors: errors.array() });
+        }
+
         const userId = req.params.id;
         const formData = req.body;
 
@@ -102,11 +116,19 @@ router.post('/admin_update_user/:id', ensureAdmin, async (req, res) => {
 
 // User database - add a new user (server-side)
 router.get('/admin_add_user', ensureAdmin, (req, res) => {
-    res.render('partials/admin_add_user');
+    res.render('partials/admin_add_user', {user: req.user});
 });
-
-router.post('/admin_add_user', ensureAdmin, async (req, res) => {
+    //express valdation added to name, email and password
+router.post('/admin_add_user', ensureAdmin, [
+    body('name').notEmpty().withMessage('Name is required').trim().escape(),
+    body('email').isEmail().withMessage('Invalid email').normalizeEmail(),
+    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape(),],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.render('partials/admin_add_user', {user: req.user, errors: errors.array() });
+        }
         const formData = req.body;
         const newUser = new User({
             name: formData.name,
@@ -177,8 +199,33 @@ router.get('/admin_update_recipe/:id', ensureAdmin, async (req, res) => {
 });
 
 // Save updated recipe to db
-router.post('/admin_update_recipe/:id', ensureAdmin, async (req, res) => {
+router.post('/admin_update_recipe/:id', ensureAdmin, [
+    body('name').notEmpty().withMessage('Recipe name is required').trim().escape(),
+    body('image').notEmpty().withMessage('Recipe image URL is required').trim().escape(),
+    body('ingredients').notEmpty().withMessage('Recipe ingredients are required').trim().escape(),
+    body('instruction').notEmpty().withMessage('Recipe instruction is required').trim().escape(),
+    body('cuisineType').notEmpty().withMessage('Cuisine type is required').trim().escape(),
+    body('mealType').notEmpty().withMessage('Meal type is required').trim().escape(),
+    body('dishType').notEmpty().withMessage('Dish type is required').trim().escape()],
+    async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const recipeId = req.params.id;
+            const formData = req.body;
+            const recipeToBeUpdated = { 
+                _id: recipeId,
+                name: formData.name,
+                image: formData.image,
+                ingredients: formData.ingredients,
+                instruction: formData.instruction,
+                cuisineType: formData.cuisineType,
+                mealType: formData.mealType,
+                dishType: formData.dishType,
+            };
+            return res.render('partials/admin_update_recipe', { user: req.user, recipeToBeUpdated, errors: errors.array() });
+        }
+
         const recipeId = req.params.id;
         const formData = req.body;
 
