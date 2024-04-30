@@ -1,5 +1,9 @@
 <h1>New recipes</h1>
 
+<!-- Back button -->
+<button onclick="goBack()" class="back-button">Back to Recipe Database</button>
+<br>
+
 {{#if errorMessage}}
 <div class="error-message">{{ errorMessage }}</div>
 {{/if}}
@@ -77,5 +81,8 @@
   // Function checks whether the recipe should be displayed
   function shouldDisplayRecipe(name) {
     return !removedRecipes.has(name);
+  }
+  function goBack() {
+    window.location.href = '/admin/recipes'; 
   }
 </script>
