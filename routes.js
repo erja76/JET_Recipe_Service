@@ -187,11 +187,6 @@ router.get('/search', async (req, res) => {
     }
 })
 
-// Recipes fetched from Api
-router.get('/retrievedRecipes', (req, res) => {
-    res.render('partials/retrievedRecipes', { searchedRecipes: searchedRecipes });
-});
-
 // Register 
 router.get('/register', (req, res) => {
     res.render('partials/register');
