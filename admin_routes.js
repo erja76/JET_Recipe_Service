@@ -131,9 +131,6 @@ router.get('/admin/users/search', ensureAdmin, async (req, res) => {
     }
 });
 
-
-///////////////////////////////////////////////////////////////////////////////////////////
-// TÄMÄ ON VIELÄ VÄHÄN KESKEN... 
 // Recipe database - list all recipes (server-side)
 router.get('/admin/recipes', ensureAdmin, async (req, res) => {
     try {
@@ -144,7 +141,6 @@ router.get('/admin/recipes', ensureAdmin, async (req, res) => {
         res.status(500).json({ error: 'Error fetching recipes' });
     }
 });
-///////////////////////////////////////////////////////////////////////////////////////////
 
 // Recipe database - delete a recipe (server-side)
 router.post('/admin/recipes/delete/:id', ensureAdmin, async (req, res) => {
@@ -214,7 +210,11 @@ router.post('/saverecipe', ensureAdmin, async (req, res) => {
         // Check if the recipe is already saved in the database
         const existingRecipe = await Recipe.findOne({ name: name });
         if (existingRecipe) {
-            return res.render('partials/retrievedRecipes', { user: req.user, errorMessage: 'Recipe already exists in the database.', searchedRecipes: searchedRecipes });
+            return res.render('partials/retrievedRecipes', {
+                user: req.user,
+                errorMessage: 'Recipe already exists in the database.',
+                searchedRecipes: searchedRecipes
+            });
         }
 
         const savedRecipe = await Recipe.create({

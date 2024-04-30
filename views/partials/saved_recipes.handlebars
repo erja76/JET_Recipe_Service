@@ -1,0 +1,53 @@
+<h1>Here are your saved recipes: </h1>
+<br>
+
+<table id="recipe-table" class="table">
+    <tr>
+        <th>Name</th>
+        <th>Image</th>
+        <th>Ingredients</th>
+        <th>Instruction</th>
+        <th>Favorite</th>
+        <th>Remove</th>
+    </tr>
+    {{#each recipeDisplay}}
+    <tr>
+        <td>{{name}}</td>
+        <td><img src="{{ image }}" class="recipeListImage" alt="Recipe image"></td>
+        <td>{{ingredients}}</td>
+        <td><a href="{{ instruction }}" target="_blank">{{ instruction }}</a></td>
+        <td>
+            {{#if isFavorite}}
+            <span class="star-icon">★</span>
+            {{else}}
+            <form id="specialButton" class="markFavoriteForm" action="/favorite_marked/{{_id}}" method="post">
+                <button type="submit">Mark as Favorite</button>
+            </form>
+            {{/if}}
+        </td>
+        <td>
+            <form id="specialButton" class="deleteColumn" action="/saved_recipes/delete/{{_id}}" method="post"
+                onsubmit="return confirmDelete('{{name}}')">
+                <button type="submit">Remove</button>
+            </form>
+        </td>
+
+    </tr>
+    {{/each}}
+</table>
+<br>
+
+<script>
+    function confirmDelete(recipeName) {
+        var confirmation = confirm("Are you sure you want to remove the " + recipeName + " recipe?");
+        if (confirmation) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+
+<div class="back-to-button">
+    <a href="/user_dashboard" class="button">Back to user dashboard</a>
+</div>

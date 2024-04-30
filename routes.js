@@ -7,6 +7,7 @@ const axios = require('axios');
 const flash = require('connect-flash');
 // const { path } = require('.');
 const router = express.Router();
+const mongoose = require('mongoose');
 
 
 // Middleware to ensure user is authenticated 
@@ -23,7 +24,6 @@ router.get('/', (req, res) => {
     res.render('partials/index', { user: req.user });
 });
 
-////////////////////////////////////////////////////////////////////////////////////////
 // Front page recipe search for unregistered users
 router.get('/search', async (req, res) => {
     try {
@@ -48,16 +48,14 @@ router.get('/search', async (req, res) => {
             query.dishType = new RegExp(req.query.dishType, 'i');
         }
 
-        console.log("Constructed query:", query);
+        // console.log("Constructed query:", query);
         const recipes = await Recipe.find(query).lean();
-        //       console.log(recipes);
         res.render('partials/recipe_search_results', { user: req.user, recipes: recipes });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error retrieving the recipes. Please try again.');
     }
 });
-////////////////////////////////////////////////////////////////////////////////////////
 
 // Login 
 router.get('/login', (req, res) => {
@@ -104,10 +102,24 @@ router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
 router.get('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
     try {
         const userId = req.user._id;
+        // Convert recipeId into ObjectId
         const recipeId = req.params.id;
-        const recipe = await Recipe.findOne({ _id: recipeId }).lean()
-        console.log(recipe.name);
-        // Add the recipe ID to the user's saved recipes
+        const recipe = await Recipe.findOne({ _id: recipeId }).lean();
+
+        // Check if the user has already saved a recipe 
+        const user = await User.findById(userId).lean();
+        // Convert all the user's saved recipes (ObjectIds) into strings so they can be compared
+        const usersSavedRecipes = user.savedRecipes.map((arrayElement) => {
+            return arrayElement.toString()
+        })
+        if (usersSavedRecipes.includes(recipeId)) {
+            return res.render('partials/recipe_saved', {
+                user: req.user, recipeName: recipe.name,
+                message: 'You have already saved this recipe.'
+            });
+        }
+        // Add the recipe to user's saved recipes
+        // $addToSet estää myös duplikaatit :)
         await User.findByIdAndUpdate(userId, { $addToSet: { savedRecipes: recipeId } });
 
         res.render('partials/recipe_saved', { user: req.user, recipeName: recipe.name });
@@ -121,9 +133,25 @@ router.get('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
 router.get('/recipe_marked_favorite/:id', ensureAuthenticated, async (req, res) => {
     try {
         const userId = req.user._id;
+        // Convert recipeId into ObjectId
         const recipeId = req.params.id;
-        const recipe = await Recipe.findOne({ _id: recipeId }).lean()
-        // Add the recipe ID to the user's favorite recipes
+        const recipe = await Recipe.findOne({ _id: recipeId }).lean();
+
+        // Check if the recipe has already been marked as favorite
+        const user = await User.findById(userId).lean();
+        // Convert all the user's favorite recipes (ObjectIds) into strings so they can be compared
+        const usersFavoriteRecipes = user.favoriteRecipes.map((arrayElement) => {
+            return arrayElement.toString()
+        })
+
+        if (usersFavoriteRecipes.includes(recipeId)) {
+            return res.render('partials/recipe_marked_favorite', {
+                user: req.user, recipeName: recipe.name,
+                message: 'You have already marked this recipe as favorite.'
+            });
+        }
+
+        // Add the recipe to the user's favorite recipes
         await User.findByIdAndUpdate(userId, {
             $addToSet: {
                 savedRecipes: recipeId,
@@ -134,20 +162,156 @@ router.get('/recipe_marked_favorite/:id', ensureAuthenticated, async (req, res) 
         res.render('partials/recipe_marked_favorite', { user: req.user, recipeName: recipe.name });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error saving the recipe. Please try again.');
+        res.status(500).send('Error marking the recipe as favorite. Please try again.');
     }
 });
 
+// Viewing saved recipes
+router.get('/saved_recipes', ensureAuthenticated, async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId).lean();
+        const savedRecipeIds = user.savedRecipes; // Array of ObjectId's
+
+        // Promise-metodi käy läpi recipeIDt ja palauttaa niitä vastaavat tiedot tietokannasta
+        const savedRecipes = await Promise.all(savedRecipeIds.map(async (recipeId) => {
+            const recipe = await Recipe.findById(recipeId).lean();
+            return recipe;
+        }));
+        // tekee reseptien objectIDeistä stringejä (koska objectID:itä ei voi verrata edes keskenään)
+        const favoriteRecipesIdsStrings = user.favoriteRecipes.map((arrayElement) => {
+            return arrayElement.toString()
+        })
+        // lisää tallennetuille resepteille uuden kentän: 'isFavorite' tähtimerkintää varten
+        const savedRecipesWithFavorites = savedRecipes.map((arrayElement) => {
+            const recipeId = arrayElement._id.toString();
+            if (favoriteRecipesIdsStrings.includes(recipeId)) {
+                arrayElement.isFavorite = true;
+            }
+            else {
+                arrayElement.isFavorite = false;
+            }
+            return arrayElement;
+        })
+        // console.log(savedRecipesWithFavorites);
+        res.render('partials/saved_recipes', {
+            user: req.user,
+            recipeDisplay: savedRecipesWithFavorites
+        });
+    } catch (error) {
+        console.error('Error displaying recipes:', error);
+        res.status(500).json({ error: 'Error displaying the saved recipes' });
+    }
+});
+
+// Viewing favorite recipes
+router.get('/fave_recipes', ensureAuthenticated, async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId).lean();
+        const favoriteRecipeIds = user.favoriteRecipes; // Array of ObjectId's
+
+        // Promise-metodi käy läpi recipeIDt ja palauttaa niitä vastaavat tiedot tietokannasta
+        const favoriteRecipes = await Promise.all(favoriteRecipeIds.map(async (recipeId) => {
+            const recipe = await Recipe.findById(recipeId).lean();
+            return recipe;
+        }));
+
+        res.render('partials/fave_recipes', { user: req.user, recipeDisplay: favoriteRecipes });
+    } catch (error) {
+        console.error('Error displaying favorite recipes:', error);
+        res.status(500).json({ error: 'Error displaying the favorite recipes' });
+    }
+});
+
+// Removing a saved recipe
+router.post('/saved_recipes/delete/:id', ensureAuthenticated, async (req, res) => {
+    const recipeId = req.params.id;
+    try {
+        const user = await User.findById(req.user._id);
+        // $pull on käänteinen $addToSet, poistaa taulukosta sen mitä pyydetään
+        await User.findByIdAndUpdate(req.user._id, {
+            $pull: {
+                savedRecipes: recipeId,
+                favoriteRecipes: recipeId
+            }
+        });
+
+        const recipe = await Recipe.findById(recipeId).lean();
+        const templateData = {
+            user: req.user,
+            deletedRecipeName: recipe.name
+        };
+        res.render('partials/user_saved_removed', templateData);
+    } catch (error) {
+        console.error('Error removing saved recipe:', error);
+        res.status(500).send('Error removing saved recipe. Please try again.');
+    }
+});
+
+// Removing a favorite recipe
+router.post('/favorite_recipes/delete/:id', ensureAuthenticated, async (req, res) => {
+    const recipeId = req.params.id;
+    const removeFromSaved = req.body.removeFromSaved === 'true'; // Check if user wants to remove from saved
+    try {
+        const user = await User.findById(req.user._id);
+        // Remove the recipe from saved recipes if requested
+        if (removeFromSaved) {
+            await User.findByIdAndUpdate(req.user._id, {
+                $pull: {
+                    savedRecipes: recipeId,
+                    favoriteRecipes: recipeId
+                }
+            });
+        }
+        // Remove the recipe from favorites
+        else {
+            await User.findByIdAndUpdate(req.user._id, {
+                $pull: {
+                    favoriteRecipes: recipeId
+                }
+            });
+        }
+
+        const recipe = await Recipe.findById(recipeId).lean();
+        const templateData = {
+            user: req.user,
+            deletedRecipeName: recipe.name,
+        };
+        res.render('partials/user_fave_removed', templateData);
+    } catch (error) {
+        console.error('Error removing favorite recipe:', error);
+        res.status(500).send('Error removing favorite recipe. Please try again.');
+    }
+});
+
+// Mark a recipe as favorite from the user's saved recipes list
+router.post('/favorite_marked/:id', ensureAuthenticated, async (req, res) => {
+    const recipeId = req.params.id;
+    try {
+        const user = await User.findById(req.user._id);
+        // Check if the recipe is already a favorite
+        if (!user.favoriteRecipes.includes(recipeId)) {
+            user.favoriteRecipes.push(recipeId); // Add recipe to favoriteRecipes array
+            await user.save();
+        }
+        const recipe = await Recipe.findById(recipeId).lean(); // Fetch the details of the newly marked recipe
+        res.render('partials/favorite_marked', { newFaveRecipeName: recipe.name });
+    } catch (error) {
+        console.error('Error marking recipe as favorite:', error);
+        res.status(500).send('Error marking recipe as favorite. Please try again.');
+    }
+});
 
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
     try {
         const recipes = await Recipe.find().lean()
-        console.log(recipes)
+        //        console.log(recipes)
         res.render("partials/user_dashboard",
             {
                 user: req.user,
-                //                recipes: recipes
+                recipes: recipes
             }
         )
     }
@@ -186,11 +350,6 @@ router.get('/search', async (req, res) => {
         console.log(error)
     }
 })
-
-// Recipes fetched from Api
-router.get('/retrievedRecipes', (req, res) => {
-    res.render('partials/retrievedRecipes', { searchedRecipes: searchedRecipes });
-});
 
 // Register 
 router.get('/register', (req, res) => {
@@ -248,11 +407,10 @@ router.post('/register', (req, res) => {
 
 // Update (client-side)
 router.get('/update_user', ensureAuthenticated, (req, res) => {
-    //    console.log(req.user);
     res.render('partials/update_user', { user: req.user, userToBeUpdated: req.user });
 });
 
-// Update user details (client-side)
+// // Update user details (client-side)
 // purkkakoodia tähän väliin paremman puutteessa: 
 // :notNeeded lisätty tähän koska admin-puolen update_user -lomakeessa :id on välttämätön
 router.post('/update_user/:notNeeded', ensureAuthenticated, (req, res) => {
@@ -272,7 +430,5 @@ router.post('/update_user/:notNeeded', ensureAuthenticated, (req, res) => {
             res.status(500).send('Error updating user. Please try again.');
         });
 });
-
-let searchedRecipes = [];
 
 module.exports = router;

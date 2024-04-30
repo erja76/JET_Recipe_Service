@@ -9,10 +9,11 @@ body, h1, h2, h3, p, ul, li {
 }
 
 h1 {
-    margin: auto;
-    margin-top: 15px;
+    margin-top: 40px;
     margin-bottom: 15px;
     align-content: center;
+    margin-left: 30px;
+    padding-left: 84px;
 }
 
 p {
@@ -264,7 +265,6 @@ form button {
     font-size: 0.9rem; 
 }
 
-
 .recipe-card ul {
     list-style-type: none;
     padding: 0;
@@ -328,14 +328,14 @@ td img {
 
 .addButton, .searchButton {
     width: 120px;
-    height: 60px;
+    height: 70px;
     font-size: 16px;
     border: 3px solid #666363;
     cursor: pointer;
     align-content: center;
     font-weight: bolder;
     vertical-align: middle;
-    padding-top: 10px;
+    padding-top: 7px;
     margin-right: 20px;
 }
 
@@ -374,3 +374,45 @@ td img {
     height: 120px;
     width: 160px;
 }
+
+.dashboard-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-section {
+    flex-grow: 1; 
+    padding-left: 200px;
+    float: right;
+    width: 180%;
+}
+
+.button-section {
+    padding-right: 80px;
+    padding-top: 40px;
+    float: left;
+    width: 40%;
+}
+
+.viewSavedButton, .viewFavesButton {
+    width: 250px;
+    height: 70px;
+    padding-top: 30px;
+    padding-bottom: 50px;
+    margin: 40px auto; 
+    border: 5px solid #666363; 
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: bisque;
+}
+
+#specialButton {
+    width: 120px;
+    height: 70px;
+}
+
+.star-icon {
+    color: gold; 
+    font-size: 60px;
+}
+

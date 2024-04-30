@@ -1,79 +1,81 @@
 <h1>Welcome to JET Recipe Service User Dashboard!</h1>
-
+<br>
 <h3>Here you can search for recipes, save them and mark them as favorites.
     <br> Have fun!
 </h3>
 
-{{> search}}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{{!-- <h2>Your recipes:</h2> --}}
-
-{{!-- <section class="recipes">
-    {{#each recipes}}
-
-    <div class="recipe">
-        <h3 class="recipeName">{{this.name}}</h3>
-        <!--<img src={{this.image}} alt="Recipe image" class="recipeImg">-->
-        {{#each this.cuisineType}}
-        <p class="cuisineType">{{this}}</p>
-        {{/each}}
-        {{#each this.mealType}}
-        <p class="mealType">{{this}}</p>
-        {{/each}}
-        <p class="dishType">{{this.dishType}}</p>
-
-        <h3>Ingredients:</h3>
-        <ul class="ingredients">
-            {{#each this.ingredients}}
-            <li>{{this}}</li>
-            {{/each}}
-        </ul>
-        <p>{{this.instruction}}</p>
-        <a class="save" href=".">Save</a>
+<div class="dashboard-container">
+    <div class="search-section">
+        {{> search}}
     </div>
-    {{/each}}
-</section>
-<section class="recipes">
-    {{#each recipes}}
-    <div class="recipe">
-        <h3 class="recipeName">{{this.name}}</h3>
-        <img src={{this.image}} alt="Recipe image" class="recipeImg">
-        {{#each this.cuisineType}}
-        <p class="cuisineType">{{this}}</p>
-        {{/each}}
-        {{#each this.mealType}}
-        <p class="mealType">{{this}}</p>
-        {{/each}}
-        <p class="dishType">{{this.dishType}}</p>
 
-        <h3>Ingredients:</h3>
-        <ul class="ingredients">
-            {{#each this.ingredients}}
-            <li>{{this}}</li>
+    <div class="button-section">
+
+        <div class="admin-form-card">
+            <a href="/saved_recipes" class="button">Your saved recipes</a>
+        </div>
+        <div class="admin-form-card">
+            <a href="/fave_recipes" class="button">Your favorite recipes</a>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+        {{!-- <h2>Your recipes:</h2> --}}
+
+        {{!-- <section class="recipes">
+            {{#each recipes}}
+
+            <div class="recipe">
+                <h3 class="recipeName">{{this.name}}</h3>
+                <!--<img src={{this.image}} alt="Recipe image" class="recipeImg">-->
+                {{#each this.cuisineType}}
+                <p class="cuisineType">{{this}}</p>
+                {{/each}}
+                {{#each this.mealType}}
+                <p class="mealType">{{this}}</p>
+                {{/each}}
+                <p class="dishType">{{this.dishType}}</p>
+
+                <h3>Ingredients:</h3>
+                <ul class="ingredients">
+                    {{#each this.ingredients}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+                <p>{{this.instruction}}</p>
+                <a class="save" href=".">Save</a>
+            </div>
             {{/each}}
-        </ul>
-        <p>{{this.instruction}}</p>
-        <a class="save" href=".">Save</a>
-    </div>
-    {{/each}}
-</section> --}}
+        </section>
+        <section class="recipes">
+            {{#each recipes}}
+            <div class="recipe">
+                <h3 class="recipeName">{{this.name}}</h3>
+                <img src={{this.image}} alt="Recipe image" class="recipeImg">
+                {{#each this.cuisineType}}
+                <p class="cuisineType">{{this}}</p>
+                {{/each}}
+                {{#each this.mealType}}
+                <p class="mealType">{{this}}</p>
+                {{/each}}
+                <p class="dishType">{{this.dishType}}</p>
+
+                <h3>Ingredients:</h3>
+                <ul class="ingredients">
+                    {{#each this.ingredients}}
+                    <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+                <p>{{this.instruction}}</p>
+                <a class="save" href=".">Save</a>
+            </div>
+            {{/each}}
+        </section> --}}
