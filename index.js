@@ -13,8 +13,11 @@ const LocalStrategy = require('passport-local').Strategy
 const flash = require('connect-flash');
 const routes = require('./routes');
 const adminRoutes = require('./admin_routes');
+const nodemailer = require("nodemailer");
 
 const app = express();
+
+const appmail = ""
 
 app.use(session({
     secret: "secret",
@@ -94,6 +97,58 @@ mongoose.connect(dbURI)
     .catch((err) => {
         console.error('Error connecting to DB:', err);
     });
+
+
+
+// Create e-mail transporter    
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: appmail, 
+        pass: 'your_password' 
+    }
+});
+
+
+//Send email when new is added to db, that match user interests
+const sendEmail = (recipeItem, targetEmail) => {
+    const mailOptions = {
+        from: appmail,
+        to: targetEmail,
+        subject: 'New Recipe added to our service!',
+        text: `A new recipe has been added! \n${recipeItem.name}`
+      };
+    
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error occurred while sending email:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
+      });
+}
+
+// Listen to recipe additions    
+const db = mongoose.connection;
+db.once('open', () => {
+    const changeStream = Recipe.watch()
+
+    changeStream.on('change', async (change) => {
+        if (change.operationType === 'insert') {
+            const newItem = change.fullDocument
+            const users = await User.find().lean()
+            for (let [key, user] of Object.entries(users)) {
+                if(newItem.dishType.some(item => user.recipeInterests.includes(item)) && user.receiveRecommendations) {
+                    
+                    sendEmail(newItem, user.email)
+                }
+            };
+
+        }
+    })
+})
+
+
 
 module.exports = app;
 
