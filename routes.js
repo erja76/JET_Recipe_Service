@@ -1,4 +1,5 @@
 const express = require('express');
+const { body, validationResult } = require('express-validator');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
@@ -206,7 +207,17 @@ router.post('/logout', (req, res, next) => {
 });
 
 // Registering a new user (client-side)
-router.post('/register', (req, res) => {
+    //express valdation added to name, email and password
+router.post('/register', [ 
+    body('name').notEmpty().withMessage('Name is required').trim().escape(),
+    body('email').isEmail().withMessage('Invalid email').normalizeEmail(),
+    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape()],
+    (req, res) => {
+     const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.render('partials/register', { errors: errors.array() });
+    }
+
     const formData = req.body;
     const password = formData.password;
 
@@ -250,7 +261,14 @@ router.get('/update_user', ensureAuthenticated, (req, res) => {
 // Update user details (client-side)
 // purkkakoodia tähän väliin paremman puutteessa: 
 // :notNeeded lisätty tähän koska admin-puolen update_user -lomakeessa :id on välttämätön
-router.post('/update_user/:notNeeded', ensureAuthenticated, (req, res) => {
+    //express valdation password
+router.post('/update_user/:notNeeded', ensureAuthenticated, [
+    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape()],
+    (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.render('partials/update_user', { errors: errors.array() });
+    }
     const userId = req.user._id;
     const formData = req.body;
 
