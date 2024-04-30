@@ -73,77 +73,77 @@ router.get('/admin_update_user/:id', ensureAdmin, async (req, res) => {
 });
 
 // Update user details in the user database (server-side)
-    //express valdation added to name, email and password
+//express valdation added to name, email and password
 router.post('/admin_update_user/:id', ensureAdmin, [
     body('name').notEmpty().withMessage('Name is required').trim().escape(), //Escape poistaa HTML ja Javascript koodin
     body('email').isEmail().withMessage('Invalid email').normalizeEmail(),  //muuttaa emailin kirjaimet pieniksi ja poistaa ylimääräiset välilyonnit
     body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape()],
     async (req, res) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                const userId = req.params.id;
+                const userToBeUpdated = await User.findById(userId).lean(); //Fetching the details of the user to be updated
+                return res.render('partials/admin_update_user', { user: req.user, userToBeUpdated: userToBeUpdated, errors: errors.array() });
+            }
+
             const userId = req.params.id;
-            const userToBeUpdated = await User.findById(userId).lean(); //Fetching the details of the user to be updated
-            return res.render('partials/admin_update_user', {user: req.user, userToBeUpdated: userToBeUpdated, errors: errors.array() });
+            const formData = req.body;
+
+            let updateFields = {
+                name: formData.name,
+                email: formData.email,
+                adminRights: formData.adminRights === 'true',
+                recipeInterests: formData.recipePreferences,
+                receiveRecommendations: formData.receiveRecommendations === 'true',
+            };
+
+            // Check if the password has been updated
+            if (formData.password && formData.password !== "") {
+                const hashedPassword = await bcrypt.hash(formData.password, 10);
+                updateFields.password = hashedPassword;
+            }
+
+            const updatedUser = await User.findByIdAndUpdate(userId, updateFields, { new: true });
+
+            console.log('User updated successfully:', updatedUser);
+            res.redirect('/admin/users');
+        } catch (error) {
+            console.error('Error updating user:', error);
+            res.status(500).send('Error updating user. Please try again.');
         }
-
-        const userId = req.params.id;
-        const formData = req.body;
-
-        let updateFields = {
-            name: formData.name,
-            email: formData.email,
-            adminRights: formData.adminRights === 'true',
-            recipeInterests: formData.recipePreferences,
-            receiveRecommendations: formData.receiveRecommendations === 'true',
-        };
-
-        // Check if the password has been updated
-        if (formData.password && formData.password !== "") {
-            const hashedPassword = await bcrypt.hash(formData.password, 10);
-            updateFields.password = hashedPassword;
-        }
-
-        const updatedUser = await User.findByIdAndUpdate(userId, updateFields, { new: true });
-
-        console.log('User updated successfully:', updatedUser);
-        res.redirect('/admin/users');
-    } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).send('Error updating user. Please try again.');
-    }
-});
+    });
 
 // User database - add a new user (server-side)
 router.get('/admin_add_user', ensureAdmin, (req, res) => {
-    res.render('partials/admin_add_user', {user: req.user});
+    res.render('partials/admin_add_user', { user: req.user });
 });
-    //express valdation added to name, email and password
+//express valdation added to name, email and password
 router.post('/admin_add_user', ensureAdmin, [
     body('name').notEmpty().withMessage('Name is required').trim().escape(),
     body('email').isEmail().withMessage('Invalid email').normalizeEmail(),
     body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape(),],
     async (req, res) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.render('partials/admin_add_user', {user: req.user, errors: errors.array() });
-        }
-        const formData = req.body;
-        const newUser = new User({
-            name: formData.name,
-            email: formData.email,
-            adminRights: formData.adminRights === 'true',
-        });
-        await newUser.save();
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.render('partials/admin_add_user', { user: req.user, errors: errors.array() });
+            }
+            const formData = req.body;
+            const newUser = new User({
+                name: formData.name,
+                email: formData.email,
+                adminRights: formData.adminRights === 'true',
+            });
+            await newUser.save();
 
-        console.log('User added successfully:', newUser);
-        res.render('partials/user_added', { user: req.user, addedUserName: formData.name });
-    } catch (error) {
-        console.error('Error adding user:', error);
-        res.status(500).send('Error adding user. Please try again.');
-    }
-});
+            console.log('User added successfully:', newUser);
+            res.render('partials/user_added', { user: req.user, addedUserName: formData.name });
+        } catch (error) {
+            console.error('Error adding user:', error);
+            res.status(500).send('Error adding user. Please try again.');
+        }
+    });
 
 // User database - search for a user by name (server-side)
 router.get('/admin/users/search', ensureAdmin, async (req, res) => {
@@ -157,7 +157,7 @@ router.get('/admin/users/search', ensureAdmin, async (req, res) => {
         res.status(500).send('Error searching for user. Please try again.');
     }
 });
- 
+
 // Recipe database - list all recipes (server-side)
 router.get('/admin/recipes', ensureAdmin, async (req, res) => {
     try {
@@ -208,13 +208,28 @@ router.post('/admin_update_recipe/:id', ensureAdmin, [
     body('mealType').notEmpty().withMessage('Meal type is required').trim().escape(),
     body('dishType').notEmpty().withMessage('Dish type is required').trim().escape()],
     async (req, res) => {
-    try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                const recipeId = req.params.id;
+                const formData = req.body;
+                const recipeToBeUpdated = {
+                    _id: recipeId,
+                    name: formData.name,
+                    image: formData.image,
+                    ingredients: formData.ingredients,
+                    instruction: formData.instruction,
+                    cuisineType: formData.cuisineType,
+                    mealType: formData.mealType,
+                    dishType: formData.dishType,
+                };
+                return res.render('partials/admin_update_recipe', { user: req.user, recipeToBeUpdated, errors: errors.array() });
+            }
+
             const recipeId = req.params.id;
             const formData = req.body;
-            const recipeToBeUpdated = { 
-                _id: recipeId,
+
+            const updatedFields = {
                 name: formData.name,
                 image: formData.image,
                 ingredients: formData.ingredients,
@@ -223,60 +238,45 @@ router.post('/admin_update_recipe/:id', ensureAdmin, [
                 mealType: formData.mealType,
                 dishType: formData.dishType,
             };
-            return res.render('partials/admin_update_recipe', { user: req.user, recipeToBeUpdated, errors: errors.array() });
+
+            const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, updatedFields, { new: true });
+
+            console.log('Recipe updated successfully:', updatedRecipe);
+            res.redirect('/admin/recipes');
+        } catch (error) {
+            console.error('Error updating recipe:', error);
+            res.status(500).send('Error updating recipe. Please try again.');
         }
-
-        const recipeId = req.params.id;
-        const formData = req.body;
-
-        const updatedFields = {
-            name: formData.name,
-            image: formData.image,
-            ingredients: formData.ingredients,
-            instruction: formData.instruction,
-            cuisineType: formData.cuisineType,
-            mealType: formData.mealType,
-            dishType: formData.dishType,
-        };
-
-        const updatedRecipe = await Recipe.findByIdAndUpdate(recipeId, updatedFields, { new: true });
-
-        console.log('Recipe updated successfully:', updatedRecipe);
-        res.redirect('/admin/recipes');
-    } catch (error) {
-        console.error('Error updating recipe:', error);
-        res.status(500).send('Error updating recipe. Please try again.');
-    }
-});
+    });
 
 //Search chosen recipes from db
 router.post('/searchRecipesDB', ensureAdmin, async (req, res) => {
     try {
-         // Initializing an empty query object
-         let query = {};
+        // Initializing an empty query object
+        let query = {};
 
-         // RegExp = a pattern used to match certain character combinations in strings
-         if (req.body.name) {
-             query.name = new RegExp(req.body.name, 'i');
-         }
-         if (req.body.ingredients) {
-             query.ingredients = new RegExp(req.body.ingredients, 'i')
-         }
-         if (req.body.cuisineType) {
-             query.cuisineType = new RegExp(req.body.cuisineType, 'i');
-         }
-         if (req.body.mealType) {
-             query.mealType = new RegExp(req.body.mealType, 'i');
-         }
-         if (req.body.dishType) {
-             query.dishType = new RegExp(req.body.dishType, 'i');
-         }
- 
-         console.log("Constructed query:", query);
-         const recipes = await Recipe.find(query).lean();
+        // RegExp = a pattern used to match certain character combinations in strings
+        if (req.body.name) {
+            query.name = new RegExp(req.body.name, 'i');
+        }
+        if (req.body.ingredients) {
+            query.ingredients = new RegExp(req.body.ingredients, 'i')
+        }
+        if (req.body.cuisineType) {
+            query.cuisineType = new RegExp(req.body.cuisineType, 'i');
+        }
+        if (req.body.mealType) {
+            query.mealType = new RegExp(req.body.mealType, 'i');
+        }
+        if (req.body.dishType) {
+            query.dishType = new RegExp(req.body.dishType, 'i');
+        }
+
+        console.log("Constructed query:", query);
+        const recipes = await Recipe.find(query).lean();
 
         res.json({ recipes: recipes });
-    } 
+    }
     catch (error) {
         console.error('Error searching for recipes:', error);
         res.status(500).json({ error: 'Error searching for recipes' });
@@ -334,7 +334,11 @@ router.post('/saverecipe', ensureAdmin, async (req, res) => {
         // Check if the recipe is already saved in the database
         const existingRecipe = await Recipe.findOne({ name: name });
         if (existingRecipe) {
-            return res.render('partials/retrievedRecipes', { user: req.user, errorMessage: 'Recipe already exists in the database.', searchedRecipes: searchedRecipes });
+            return res.render('partials/retrievedRecipes', {
+                user: req.user,
+                errorMessage: 'Recipe already exists in the database.',
+                searchedRecipes: searchedRecipes
+            });
         }
 
         const savedRecipe = await Recipe.create({

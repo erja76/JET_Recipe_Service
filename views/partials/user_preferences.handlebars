@@ -6,6 +6,20 @@
 <input type="checkbox" {{#ifIn "bread" userToBeUpdated.recipeInterests}} checked {{/ifIn}} id="bread"
     name="recipePreferences" value="bread">
 <label for="bread">Bread</label><br>
+<input type="checkbox" {{#ifIn "Bread" userToBeUpdated.recipeInterests}} checked {{/ifIn}} id="Bread"
+    name="recipePreferences" value="Bread">
+<label for="Bread">Bread</label><br>
+
+<input type="checkbox" {{#ifIn "drinks" userToBeUpdated.recipeInterests}} checked {{/ifIn}} id="drinks"
+    name="recipePreferences" value="drinks">
+<label for="drinks">Drinks</label><br>
+<input type="checkbox" {{#ifIn "Condiments and sauces" userToBeUpdated.recipeInterests}} checked {{/ifIn}}
+    id="Condiments and sauces" name="recipePreferences" value="Condiments and sauces">
+<label for="Condiments and sauces">Condiments and sauces</label><br>
+
+<input type="checkbox" {{#ifIn "bread" userToBeUpdated.recipeInterests}} checked {{/ifIn}} id="bread"
+    name="recipePreferences" value="bread">
+<label for="bread">Bread</label><br>
 
 <input type="checkbox" {{#ifIn "drinks" userToBeUpdated.recipeInterests}} checked {{/ifIn}} id="drinks"
     name="recipePreferences" value="drinks">
@@ -19,9 +33,6 @@
     name="recipePreferences" value="soup">
 <label for="soup">Soup</label><br>
 
-<input type="checkbox" {{#ifIn "desserts" userToBeUpdated.recipeInterests}} checked {{/ifIn}} id="desserts"
-    name="recipePreferences" value="desserts">
-<label for="desserts">Desserts</label><br>
 
 <label><strong>Would you like to receive recommendations of recipes that match your
         preferences?</strong></label><br>

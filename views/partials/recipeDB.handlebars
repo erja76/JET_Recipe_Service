@@ -1,4 +1,4 @@
- <h1>Recipe Database</h1>
+<h1>Recipe Database</h1>
 <br>
 
 <!--Buttons -->
@@ -11,7 +11,7 @@
 
 <!--Recipe Table -->
 <table id="recipe-table" class="table" style="display: none;">
-     <thead>
+    <thead>
         <tr>
             <th>ID</th>
             <th>Name</th>
@@ -37,7 +37,8 @@
             <td>{{mealType}}</td>
             <td>{{dishType}}</td>
             <td>
-                <a href="/admin_update_recipe/{{_id}}" id="recipeUpdateLink"><button class="updateButton" type="submit">Update</button></a>
+                <a href="/admin_update_recipe/{{_id}}" id="recipeUpdateLink"><button class="updateButton"
+                        type="submit">Update</button></a>
             </td>
             <td>
                 <form class="deleteColumn" action="/admin/recipes/delete/{{_id}}" method="post"
@@ -47,6 +48,22 @@
             </td>
         </tr>
     </tbody>
+    <tr>
+        <td>{{_id}}</td>
+        <td>{{name}}</td>
+        <td><img src="{{ image }}" class="recipeListImage" alt="Recipe image"></td>
+        <td>{{ingredients}}</td>
+        <td><a href="{{ instruction }}" target="_blank">{{ instruction }}</a></td>
+        <td>{{cuisineType}}</td>
+        <td>{{mealType}}</td>
+        <td>{{dishType}}</td>
+        <td>
+            <form class="deleteColumn" action="/admin/recipes/delete/{{_id}}" method="post"
+                onsubmit="return confirm('Are you sure you want to delete the recipe {{name}}?');">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
     {{/each}}
 </table>
 <br>
@@ -131,10 +148,10 @@
 <script>
     function printAllRecipes() {
         console.log("Painettu Print All Recipes -painiketta");
-        searchRecipesFromDB(); 
+        searchRecipesFromDB();
         document.getElementById("recipe-table").style.display = "block";
         document.getElementById("searchNewRecipesForm").style.display = "none";
-        document.getElementById("searchDB-Form").style.display = "none"; 
+        document.getElementById("searchDB-Form").style.display = "none";
     }
 
     function toggleSearchForm() {
@@ -144,7 +161,7 @@
         if (displayStyle === "none") {
             searchDBForm.style.display = "block";
             document.getElementById("searchNewRecipesForm").style.display = "none";
-            document.getElementById("recipe-table").style.display = "none"; 
+            document.getElementById("recipe-table").style.display = "none";
         } else {
             searchDBForm.style.display = "none";
         }
@@ -172,19 +189,19 @@
             },
             body: JSON.stringify({ cuisineType, mealType, dishType, ingredients, name })
         })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Error searching for recipes:', response.statusText);
-            }
-        })
-        .then(data => {
-            updateTable(data.recipes);
-        })
-        .catch(error => {
-            console.error(error);
-        });
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Error searching for recipes:', response.statusText);
+                }
+            })
+            .then(data => {
+                updateTable(data.recipes);
+            })
+            .catch(error => {
+                console.error(error);
+            });
 
         // Empty filters
         document.getElementById("cuisineType").value = "";
@@ -196,7 +213,7 @@
 
     function updateTable(recipes) {
         const tableBody = document.getElementById("recipe-table").getElementsByTagName("tbody")[0];
-        tableBody.innerHTML = ""; 
+        tableBody.innerHTML = "";
 
         recipes.forEach(recipe => {
             const newRow = tableBody.insertRow();
@@ -234,9 +251,6 @@
 </div>
 {{/each}}
 <br> --}}
-  
+
 <div class="back-to-button">
-    <a href="/admin/recipes" class="button">Back to top</a>
-</div>   
-
-
+</div>
