@@ -1,0 +1,48 @@
+<!-- Validation Error message-->
+{{#if errors}}
+   <div id="error-container" class="errors">
+    <ul>
+      {{#each errors}}
+        <li>{{ this.msg }}</li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}
+
+<div class="form-card">
+    <form action="/admin_update_recipe/{{recipeToBeUpdated._id}}" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" value="{{recipeToBeUpdated.name}}"><br><br>
+
+        <label for="image">Image URL:</label><br>
+        <input type="text" id="image" name="image" value="{{recipeToBeUpdated.image}}"><br><br>
+
+        <label for="ingredients">Ingredients:</label><br>
+        <textarea id="ingredients" name="ingredients" rows="4" cols="50">{{recipeToBeUpdated.ingredients}}</textarea><br><br>
+
+        <label for="instruction">Instruction:</label><br>
+        <textarea id="instruction" name="instruction" rows="4" cols="50">{{recipeToBeUpdated.instruction}}</textarea><br><br>
+
+        <label for="cuisineType">Cuisine Type:</label><br>
+        <input type="text" id="cuisineType" name="cuisineType" value="{{recipeToBeUpdated.cuisineType}}"><br><br>
+
+        <label for="mealType">Meal Type:</label><br>
+        <input type="text" id="mealType" name="mealType" value="{{recipeToBeUpdated.mealType}}"><br><br>
+
+        <label for="dishType">Dish Type:</label><br>
+        <input type="text" id="dishType" name="dishType" value="{{recipeToBeUpdated.dishType}}"><br><br>
+
+        <button type="submit"><strong>Update Recipe</strong></button>
+        <button type="button" onclick="window.location.href='/admin/recipes';"><strong>Cancel</strong></button>
+    </form>
+</div>
+
+<script>
+  // Hide error message after 5 seconds
+  setTimeout(function() {
+    var errorContainer = document.getElementById('error-container');
+    if (errorContainer) {
+      errorContainer.style.display = 'none';
+    }
+  }, 5000); // 5000 ms = 5 sekuntia
+</script>

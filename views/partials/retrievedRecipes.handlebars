@@ -1,5 +1,9 @@
 <h1>New recipes</h1>
 
+<!-- Back button -->
+<button onclick="window.location.href='/admin/recipes';" class="back-button"><strong>Back to Recipe Database</strong></button>
+<br>
+
 {{#if errorMessage}}
 <div class="error-message">{{ errorMessage }}</div>
 {{/if}}
@@ -81,6 +85,8 @@
 </script>
 
 
+
 <div class="back-to-button">
-  <a href="/admin" class="button">Back to recipe search</a>
+  <a href="/admin/recipes" class="button">Back to recipe search</a>
 </div>
+

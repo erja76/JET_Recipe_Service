@@ -1,3 +1,14 @@
+<!-- Validation Error message-->
+{{#if errors}}
+   <div id="error-container" class="errors">
+    <ul>
+      {{#each errors}}
+        <li>{{ this.msg }}</li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}
+
 <div class="form-card">
     <form id="updateForm" action="/admin_update_user/{{userToBeUpdated._id}}" method="POST">
         <label for="name"><strong>Name:</strong></label>
@@ -27,5 +38,16 @@
         <input type="hidden" name="userId" value="{{user._id}}">
 
         <button type="submit"><strong>Update Preferences</strong></button>
+        <button type="button" onclick="window.location.href='/admin/users';"><strong>Cancel</strong></button>
     </form>
 </div>
+
+<script>
+  // Hide error message after 5 seconds
+  setTimeout(function() {
+    var errorContainer = document.getElementById('error-container');
+    if (errorContainer) {
+      errorContainer.style.display = 'none';
+    }
+  }, 5000); // 5000 ms = 5 sekuntia
+</script>
