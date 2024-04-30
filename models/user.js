@@ -6,7 +6,9 @@ const userSchema = new mongoose.Schema({
     password: String,
     recipeInterests: [String],
     receiveRecommendations: Boolean,
-    adminRights: Boolean
+    adminRights: Boolean,
+    savedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recipe' }],
+    favoriteRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recipe' }]
 });
 
 const User = mongoose.model('User', userSchema);

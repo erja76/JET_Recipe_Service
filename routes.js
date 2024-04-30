@@ -50,8 +50,8 @@ router.get('/search', async (req, res) => {
 
         console.log("Constructed query:", query);
         const recipes = await Recipe.find(query).lean();
-        console.log(recipes);
-        res.render('partials/recipe_search_results', { recipes: recipes });
+        //       console.log(recipes);
+        res.render('partials/recipe_search_results', { user: req.user, recipes: recipes });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error retrieving the recipes. Please try again.');
@@ -95,7 +95,50 @@ async function getRecipes(params = "") {
     }
 }
 
-// *** PALAUTA KAIKKI TÄMÄ ***
+// User dashboard - SIMPLE 
+router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
+    res.render('partials/user_dashboard', { user: req.user, message: req.flash('error') });
+});
+
+// Save a recipe 
+router.get('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const recipeId = req.params.id;
+        const recipe = await Recipe.findOne({ _id: recipeId }).lean()
+        console.log(recipe.name);
+        // Add the recipe ID to the user's saved recipes
+        await User.findByIdAndUpdate(userId, { $addToSet: { savedRecipes: recipeId } });
+
+        res.render('partials/recipe_saved', { user: req.user, recipeName: recipe.name });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error saving the recipe. Please try again.');
+    }
+});
+
+// Mark a recipe as favorite
+router.get('/recipe_marked_favorite/:id', ensureAuthenticated, async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const recipeId = req.params.id;
+        const recipe = await Recipe.findOne({ _id: recipeId }).lean()
+        // Add the recipe ID to the user's favorite recipes
+        await User.findByIdAndUpdate(userId, {
+            $addToSet: {
+                savedRecipes: recipeId,
+                favoriteRecipes: recipeId
+            }
+        });
+
+        res.render('partials/recipe_marked_favorite', { user: req.user, recipeName: recipe.name });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error saving the recipe. Please try again.');
+    }
+});
+
+
 // User dashboard
 router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
     try {
@@ -142,8 +185,6 @@ router.get('/search', async (req, res) => {
     catch (error) {
         console.log(error)
     }
-
-
 })
 
 // Register 

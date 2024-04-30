@@ -23,8 +23,7 @@ router.get('/retrievedRecipes', (req, res) => {
 });
 
 // Admin 
-router.get('/admin', (req, res) => {
-    //    router.get('/admin', ensureAdmin, (req, res) => {
+router.get('/admin', ensureAdmin, (req, res) => {
     res.render('partials/admin', { user: req.user });
 });
 
@@ -139,7 +138,6 @@ router.get('/admin/users/search', ensureAdmin, async (req, res) => {
  
 // Recipe database - list all recipes (server-side)
 router.get('/admin/recipes', ensureAdmin, async (req, res) => {
-    //    router.get('/admin/recipes', ensureAdmin, async (req, res) => {
     try {
         const recipes = await Recipe.find().lean();
         res.render('partials/recipeDB', { user: req.user, recipes: recipes });

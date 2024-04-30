@@ -37,6 +37,19 @@
             <li>{{ this }}</li>
             {{/each}}
         </ul>
+
+        {{!-- Buttons will be displayed if user is logged in
+        Koska ollaan eachin sisällä tarvitaan ../ joka mahdollistaa
+        "ulkopuolisen" muuttujan käyttämisen --}}
+        {{#if ../user}}
+        <div>
+            <a href="/recipe_saved/{{ this._id }}" class="saveButton"><button><strong>Save a
+                        Recipe</strong></button></a>
+            <a href="/recipe_marked_favorite/{{ this._id }}" class="faveButton"><button><strong>Mark as
+                        Favorite</strong></button></a>
+        </div>
+        {{/if}}
+
     </div>
     {{/each}}
     {{else}}
@@ -46,6 +59,12 @@
 
 <br>
 
-<div class="back-to-search-card">
+{{#if user}}
+<div class="back-to-button">
+    <a href="/user_dashboard" class="button">Back to recipe search</a>
+</div>
+{{else}}
+<div class="back-to-button">
     <a href="/" class="button">Back to recipe search</a>
 </div>
+{{/if}}

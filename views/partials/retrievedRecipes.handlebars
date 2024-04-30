@@ -25,7 +25,7 @@
       {{/each}}
     </ul>
     <h3>Instructions</h3>
-    <p>{{ this.instruction }}</p>
+    <p><a href="{{ this.instruction }}" target="_blank">{{ this.instruction }}</a></p>
     <h3>Cuisinetype</h3>
     <ul>
       {{#each this.cuisineType}}
@@ -82,7 +82,15 @@
   function shouldDisplayRecipe(name) {
     return !removedRecipes.has(name);
   }
+  
   function goBack() {
     window.location.href = '/admin/recipes'; 
   }
 </script>
+
+
+
+<div class="back-to-button">
+  <a href="/admin" class="button">Back to recipe search</a>
+</div>
+
