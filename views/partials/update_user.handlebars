@@ -1,40 +1,40 @@
 <!-- Validation Error message-->
 {{#if errors}}
-   <div id="error-container" class="errors">
-    <ul>
-      {{#each errors}}
-        <li>{{ this.msg }}</li>
-      {{/each}}
-    </ul>
-  </div>
+<div id="error-container" class="errors">
+  <ul>
+    {{#each errors}}
+    <li>{{ this.msg }}</li>
+    {{/each}}
+  </ul>
+</div>
 {{/if}}
 
 <div class="form-card">
-    <form id="updateForm" action="/update_user/{{userToBeUpdated._id}}" method="POST">
-        <label for="name"><strong>Name:</strong></label>
-        <strong>{{userToBeUpdated.name}}</strong><br>
-        <br>
-        <label for="password"><strong>Password:</strong></label>
-        <input type="text" name="password" placeholder="New password"><br>
-        <br>
-        <label for="email"><strong>Email:</strong></label>
-        <strong>{{userToBeUpdated.email}}</strong><br>
-        <br>
+  <form id="updateForm" action="/update_user/{{userToBeUpdated._id}}" method="POST">
+    <label for="name"><strong>Name:</strong></label>
+    <strong>{{userToBeUpdated.name}}</strong><br>
+    <br>
+    <label for="password"><strong>Password:</strong></label>
+    <input type="text" name="password" placeholder="New password"><br>
+    <br>
+    <label for="email"><strong>Email:</strong></label>
+    <strong>{{userToBeUpdated.email}}</strong><br>
+    <br>
 
-        {{#if showPasswordInput}}
-        <input type="hidden" name="password" value="{{userToBeUpdated.password}}">
-        {{/if}}
+    {{#if showPasswordInput}}
+    <input type="hidden" name="password" value="{{userToBeUpdated.password}}">
+    {{/if}}
 
-        {{> user_preferences}}
+    {{> user_preferences}}
 
-        <button type="submit"><strong>Update Preferences</strong></button>
-        <button type="button" onclick="window.location.href='/user_dashboard';"><strong>Cancel</strong></butt
-    </form>
+    <button type="submit"><strong>Update Preferences</strong></button>
+    <button type="button" onclick="window.location.href='/user_dashboard';"><strong>Cancel</strong></button>
+  </form>
 </div>
 
 <script>
   // Hide error message after 5 seconds
-  setTimeout(function() {
+  setTimeout(function () {
     var errorContainer = document.getElementById('error-container');
     if (errorContainer) {
       errorContainer.style.display = 'none';
