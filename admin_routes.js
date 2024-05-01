@@ -10,7 +10,6 @@ const flash = require('connect-flash');
 const router = express.Router();
 
 
-
 // Middleware to ensure user is registered AND is admin user
 const ensureAdmin = (req, res, next) => {
     if (req.user !== undefined && req.user.adminRights === true) {
@@ -73,11 +72,17 @@ router.get('/admin_update_user/:id', ensureAdmin, async (req, res) => {
 });
 
 // Update user details in the user database (server-side)
-//express valdation added to name, email and password
+// express validation added to name, email and password
 router.post('/admin_update_user/:id', ensureAdmin, [
     body('name').notEmpty().withMessage('Name is required').trim().escape(), //Escape poistaa HTML ja Javascript koodin
     body('email').isEmail().withMessage('Invalid email').normalizeEmail(),  //muuttaa emailin kirjaimet pieniksi ja poistaa ylimääräiset välilyonnit
-    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape()],
+    body('password')
+        .isLength({ min: 5 })
+        .withMessage('Password must be at least 5 characters long')
+        .trim()
+        .escape()
+        .optional({ values: 'falsy' }) // jos olemassaoleva password on jo hyvä, ei tarvi muuttaa 
+],
     async (req, res) => {
         try {
             const errors = validationResult(req);
@@ -90,7 +95,7 @@ router.post('/admin_update_user/:id', ensureAdmin, [
             const userId = req.params.id;
             const formData = req.body;
 
-            let updateFields = {
+            const updateFields = {
                 name: formData.name,
                 email: formData.email,
                 adminRights: formData.adminRights === 'true',

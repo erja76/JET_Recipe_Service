@@ -1,6 +1,8 @@
 <h1>These recipes matched your search:</h1>
 <br>
 
+{{message}}
+
 <section class="recipe-section">
     {{#if recipes.length}}
     {{#each recipes}}
@@ -38,16 +40,18 @@
             {{/each}}
         </ul>
 
-        {{!-- Buttons will be displayed if user is logged in
-        Koska ollaan eachin sisällä tarvitaan ../ joka mahdollistaa
-        "ulkopuolisen" muuttujan käyttämisen --}}
         {{#if ../user}}
-        <div>
-            <a href="/recipe_saved/{{ this._id }}" class="saveButton"><button><strong>Save a
-                        Recipe</strong></button></a>
-            <a href="/recipe_marked_favorite/{{ this._id }}" class="faveButton"><button><strong>Mark as
-                        Favorite</strong></button></a>
-        </div>
+
+        <form action="/recipe_saved/{{ this._id }}" method="post">
+            <input type="hidden" name="currentURL" value="{{ ../currentURL }}">
+            <button type="submit"><strong>Save a Recipe</strong></button>
+        </form>
+
+        <form action="/recipe_marked_favorite/{{ this._id }}" method="post">
+            <input type="hidden" name="currentURL" value="{{ ../currentURL }}">
+            <button type="submit"><strong>Mark as Favorite</strong></button>
+        </form>
+
         {{/if}}
     </div>
     {{/each}}

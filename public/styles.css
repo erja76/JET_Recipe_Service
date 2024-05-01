@@ -341,7 +341,7 @@ td img {
 
 .saveButton, .faveButton {
     width: 120px;
-    height: 90px;
+    height: 70px;
     font-size: 16px;
     border: 3px solid #666363;
     cursor: pointer;
@@ -377,7 +377,7 @@ td img {
 
 .recipeButton {
     width: 250px;
-    height: 70px;
+    height: 90px;
     margin: 40px auto;
     border: 5px solid #666363;
     border-radius: 10px;
@@ -386,6 +386,7 @@ td img {
     text-align: center; 
     font-size: 16px; 
     line-height: 70px; 
+    cursor: pointer;
 }
 
 .back-button{
