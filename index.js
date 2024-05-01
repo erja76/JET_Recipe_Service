@@ -104,8 +104,8 @@ mongoose.connect(dbURI)
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: appmail, 
-        pass: 'your_password' 
+        user: appmail,
+        pass: 'your_password'
     }
 });
 
@@ -117,15 +117,15 @@ const sendEmail = (recipeItem, targetEmail) => {
         to: targetEmail,
         subject: 'New Recipe added to our service!',
         text: `A new recipe has been added! \n${recipeItem.name}`
-      };
-    
-      transporter.sendMail(mailOptions, (error, info) => {
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.error('Error occurred while sending email:', error);
+            console.error('Error occurred while sending email:', error);
         } else {
-          console.log('Email sent:', info.response);
+            console.log('Email sent:', info.response);
         }
-      });
+    });
 }
 
 // Listen to recipe additions    
@@ -138,8 +138,8 @@ db.once('open', () => {
             const newItem = change.fullDocument
             const users = await User.find().lean()
             for (let [key, user] of Object.entries(users)) {
-                if(newItem.dishType.some(item => user.recipeInterests.includes(item)) && user.receiveRecommendations) {
-                    
+                if (newItem.dishType.some(item => user.recipeInterests.includes(item)) && user.receiveRecommendations) {
+
                     sendEmail(newItem, user.email)
                 }
             };

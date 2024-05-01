@@ -16,7 +16,7 @@ Users can create accounts to save their favourite recipes and receive personaliz
 Search functionality to find recipes based on keywords, ingredients, or meal types. 
 User authentication system for saving favourite recipes. 
 Admin area for managing recipes, including adding, updating, and deleting them. 
-Recommendation system suggesting recipes based on user preferences and search history. 
+Recommendation system suggesting recipes based on user preferences and search history.
  
 
 === Technologies Used === 
