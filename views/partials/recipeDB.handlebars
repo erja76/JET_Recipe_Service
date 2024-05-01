@@ -32,9 +32,7 @@
             <td>{{name}}</td>
             <td><img src="{{ image }}" class="recipeListImage" alt="Recipe image"></td>
             <td>{{ingredients}}</td>
-            {{!-- miksi nämä linkit ei toimi?! --}}
-            <td><a href="{{ instruction }}" target="_blank">{{ instruction }}</a></td>
-            {{!-- <td>{{instruction}}</td> --}}
+            <td><a href="{{instruction}}" target="_blank">{{instruction}}</a></td>
             <td>{{cuisineType}}</td>
             <td>{{mealType}}</td>
             <td>{{dishType}}</td>
@@ -50,22 +48,6 @@
             </td>
         </tr>
     </tbody>
-    <tr>
-        <td>{{_id}}</td>
-        <td>{{name}}</td>
-        <td><img src="{{ image }}" class="recipeListImage" alt="Recipe image"></td>
-        <td>{{ingredients}}</td>
-        <td><a href="{{ instruction }}" target="_blank">{{ instruction }}</a></td>
-        <td>{{cuisineType}}</td>
-        <td>{{mealType}}</td>
-        <td>{{dishType}}</td>
-        <td>
-            <form class="deleteColumn" action="/admin/recipes/delete/{{_id}}" method="post"
-                onsubmit="return confirm('Are you sure you want to delete the recipe {{name}}?');">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
     {{/each}}
 </table>
 <br>
@@ -242,4 +224,5 @@
 </script>
 
 <div class="back-to-button">
+  <a href="#" class="button">Back to top</a>
 </div>
