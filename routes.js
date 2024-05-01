@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
     res.render('partials/index', { user: req.user });
 });
 
-// Front page recipe search for unregistered users
+// Front page recipe search 
 router.get('/search', async (req, res) => {
     try {
         // Initializing an empty query object
@@ -51,7 +51,12 @@ router.get('/search', async (req, res) => {
 
         // console.log("Constructed query:", query);
         const recipes = await Recipe.find(query).lean();
-        res.render('partials/recipe_search_results', { user: req.user, recipes: recipes });
+        res.render('partials/recipe_search_results', {
+            user: req.user,
+            recipes: recipes,
+            currentURL: req.url,
+            message: req.flash('info')
+        });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error retrieving the recipes. Please try again.');
@@ -78,29 +83,13 @@ router.get('/login_redirect', (req, res) => {
     }
 });
 
-async function getRecipes(params = "") {
-    try {
-        await Recipe.find()
-            .then(result => {
-                const recipes = result.map(recipe => recipe.toJSON())
-                return recipes
-            }
-            )
-        //const recipes = result.map(recipe => recipe.toJSON())
-
-    }
-    catch (error) {
-        console.log(error);
-    }
-}
-
-// User dashboard - SIMPLE 
+// User dashboard 
 router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
     res.render('partials/user_dashboard', { user: req.user, message: req.flash('error') });
 });
 
 // Save a recipe 
-router.get('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
+router.post('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
     try {
         const userId = req.user._id;
         // Convert recipeId into ObjectId
@@ -114,16 +103,19 @@ router.get('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
             return arrayElement.toString()
         })
         if (usersSavedRecipes.includes(recipeId)) {
-            return res.render('partials/recipe_saved', {
-                user: req.user, recipeName: recipe.name,
-                message: 'You have already saved this recipe.'
-            });
+            req.flash('info', 'You have already saved this recipe: "' + recipe.name + '".');
+            // tallentaa muutokset JA pysyy samassa URL:ssa
+            return res.redirect(req.body.currentURL);
         }
+        // console.log(req.body.currentURL);
+
         // Add the recipe to user's saved recipes
         // $addToSet estää myös duplikaatit :)
         await User.findByIdAndUpdate(userId, { $addToSet: { savedRecipes: recipeId } });
+        // storing flash message here for the time being:
+        req.flash('info', 'Recipe "' + recipe.name + '" has been saved!');
 
-        res.render('partials/recipe_saved', { user: req.user, recipeName: recipe.name });
+        res.redirect(req.body.currentURL);
     } catch (err) {
         console.error(err);
         res.status(500).send('Error saving the recipe. Please try again.');
@@ -131,7 +123,7 @@ router.get('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
 });
 
 // Mark a recipe as favorite
-router.get('/recipe_marked_favorite/:id', ensureAuthenticated, async (req, res) => {
+router.post('/recipe_marked_favorite/:id', ensureAuthenticated, async (req, res) => {
     try {
         const userId = req.user._id;
         // Convert recipeId into ObjectId
@@ -146,10 +138,8 @@ router.get('/recipe_marked_favorite/:id', ensureAuthenticated, async (req, res) 
         })
 
         if (usersFavoriteRecipes.includes(recipeId)) {
-            return res.render('partials/recipe_marked_favorite', {
-                user: req.user, recipeName: recipe.name,
-                message: 'You have already marked this recipe as favorite.'
-            });
+            req.flash('info', 'You have already marked the recipe "' + recipe.name + '" as a favorite.');
+            return res.redirect(req.body.currentURL);
         }
 
         // Add the recipe to the user's favorite recipes
@@ -160,7 +150,8 @@ router.get('/recipe_marked_favorite/:id', ensureAuthenticated, async (req, res) 
             }
         });
 
-        res.render('partials/recipe_marked_favorite', { user: req.user, recipeName: recipe.name });
+        req.flash('info', 'Recipe "' + recipe.name + '" has been marked as favorite!');
+        res.redirect(req.body.currentURL);
     } catch (err) {
         console.error(err);
         res.status(500).send('Error marking the recipe as favorite. Please try again.');
@@ -304,54 +295,6 @@ router.post('/favorite_marked/:id', ensureAuthenticated, async (req, res) => {
     }
 });
 
-// User dashboard
-router.get('/user_dashboard', ensureAuthenticated, async (req, res) => {
-    try {
-        const recipes = await Recipe.find().lean()
-        //        console.log(recipes)
-        res.render("partials/user_dashboard",
-            {
-                user: req.user,
-                recipes: recipes
-            }
-        )
-    }
-    catch (error) {
-        console.log(error)
-    }
-})
-
-router.get('/search', async (req, res) => {
-    const q = {}
-    q = req.query.map(item => {
-        if (item.length) {
-            return item
-        }
-    })
-    console.log(req.query)
-    try {
-        const recipes = await Recipe.find({
-            cuisineType: { $in: q.cuisineType },
-            mealType: { $in: q.mealType },
-            dishType: { $in: q.dishType },
-            ingredients: { $in: q.ingredients },
-            name: q.name
-
-        })
-            .lean()
-
-        res.render("partials/user_dashboard",
-            {
-                user: req.user,
-                recipes: recipes
-            }
-        )
-    }
-    catch (error) {
-        console.log(error)
-    }
-})
-
 // Register 
 router.get('/register', (req, res) => {
     res.render('partials/register');
@@ -371,82 +314,99 @@ router.post('/logout', (req, res, next) => {
 });
 
 // Registering a new user (client-side)
-    //express valdation added to name, email and password
-router.post('/register', [ 
+//express valdation added to name, email and password
+router.post('/register', [
     body('name').notEmpty().withMessage('Name is required').trim().escape(),
     body('email').isEmail().withMessage('Invalid email').normalizeEmail(),
-    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape()],
+    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape()
+],
     (req, res) => {
-     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.render('partials/register', { errors: errors.array() });
-    }
-
-    const formData = req.body;
-    const password = formData.password;
-
-    // Create a new user (client-side)
-    // Generating salt for hashing passwords
-    const saltRounds = 10; // The complexity of the hashing algorithm
-    bcrypt.hash(password, saltRounds, function (err, hash) {
-        if (err) {
-            console.error('Error hashing password:', err);
-            res.status(500).send('Error registering user. Please try again.');
-        } else {
-            const newUser = new User({
-                name: formData.name,
-                email: formData.email,
-                password: hash,
-                recipeInterests: formData.recipePreferences || [],
-                receiveRecommendations: formData.receiveRecommendations === 'true',
-                adminRights: false
-            });
-
-            // Save the new user to the database (client-side)
-            newUser.save()
-                .then(() => {
-                    console.log('User registered successfully:', newUser);
-                    res.redirect('/register_success');
-                })
-                .catch((err) => {
-                    console.error('Error registering user:', err);
-                    res.status(500).send('Error registering user. Please try again.');
-                });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.render('partials/register', { errors: errors.array() });
         }
+
+        const formData = req.body;
+        const password = formData.password;
+
+        // Create a new user (client-side)
+        // Generating salt for hashing passwords
+        const saltRounds = 10; // The complexity of the hashing algorithm
+        bcrypt.hash(password, saltRounds, function (err, hash) {
+            if (err) {
+                console.error('Error hashing password:', err);
+                res.status(500).send('Error registering user. Please try again.');
+            } else {
+                const newUser = new User({
+                    name: formData.name,
+                    email: formData.email,
+                    password: hash,
+                    recipeInterests: formData.recipePreferences || [],
+                    receiveRecommendations: formData.receiveRecommendations === 'true',
+                    adminRights: false
+                });
+
+                // Save the new user to the database (client-side)
+                newUser.save()
+                    .then(() => {
+                        console.log('User registered successfully:', newUser);
+                        res.redirect('/register_success');
+                    })
+                    .catch((err) => {
+                        console.error('Error registering user:', err);
+                        res.status(500).send('Error registering user. Please try again.');
+                    });
+            }
+        });
     });
-});
 
 // Update (client-side)
 router.get('/update_user', ensureAuthenticated, (req, res) => {
     res.render('partials/update_user', { user: req.user, userToBeUpdated: req.user });
 });
 
-// // Update user details (client-side)
+// Update user details (client-side)
 // purkkakoodia tähän väliin paremman puutteessa: 
 // :notNeeded lisätty tähän koska admin-puolen update_user -lomakeessa :id on välttämätön
-    //express valdation password
+// express validation password
 router.post('/update_user/:notNeeded', ensureAuthenticated, [
-    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long').trim().escape()],
-    (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.render('partials/update_user', { errors: errors.array() });
-    }
-    const userId = req.user._id;
-    const formData = req.body;
+    body('password')
+        .isLength({ min: 5 })
+        .withMessage('Password must be at least 5 characters long')
+        .trim()
+        .escape()
+        .optional({ values: 'falsy' }) // jos olemassaoleva password on jo hyvä, ei tarvi muuttaa
+],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.render('partials/update_user', {
+                user: req.user,
+                userToBeUpdated: req.user,
+                errors: errors.array()
+            });
+        }
+        const userId = req.user._id;
+        const formData = req.body;
+        const updateFields = {
+            recipeInterests: formData.recipePreferences,
+            receiveRecommendations: formData.receiveRecommendations === 'true',
+        };
 
-    User.findByIdAndUpdate(userId, {
-        recipeInterests: formData.recipePreferences || [],
-        receiveRecommendations: formData.receiveRecommendations === 'true',
-    }, { new: true })
-        .then((updatedUser) => {
-            console.log('User updated successfully:', updatedUser);
-            res.redirect('/user_dashboard');
-        })
-        .catch((err) => {
-            console.error('Error updating user:', err);
-            res.status(500).send('Error updating user. Please try again.');
-        });
-});
+        // Check if the password has been updated
+        if (formData.password && formData.password !== "") {
+            const hashedPassword = await bcrypt.hash(formData.password, 10);
+            updateFields.password = hashedPassword;
+        }
+
+        User.findByIdAndUpdate(userId, updateFields)
+            .then(() => {
+                res.redirect('/user_dashboard');
+            })
+            .catch((err) => {
+                console.error('Error updating user:', err);
+                res.status(500).send('Error updating user. Please try again.');
+            });
+    });
 
 module.exports = router;
