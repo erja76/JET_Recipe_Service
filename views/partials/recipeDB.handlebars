@@ -32,7 +32,9 @@
             <td>{{name}}</td>
             <td><img src="{{ image }}" class="recipeListImage" alt="Recipe image"></td>
             <td>{{ingredients}}</td>
-            <td>{{instruction}}</td>
+            {{!-- miksi nämä linkit ei toimi?! --}}
+            <td><a href="{{ instruction }}" target="_blank">{{ instruction }}</a></td>
+            {{!-- <td>{{instruction}}</td> --}}
             <td>{{cuisineType}}</td>
             <td>{{mealType}}</td>
             <td>{{dishType}}</td>
