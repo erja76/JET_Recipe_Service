@@ -17,8 +17,6 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 
-const appmail = ""
-
 app.use(session({
     secret: "secret",
     resave: false,
@@ -103,18 +101,21 @@ mongoose.connect(dbURI)
 
 // Create e-mail transporter    
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.zoho.eu',
+    port: 465,
+    secure: true,
     auth: {
-        user: appmail,
-        pass: 'your_password'
+        user: process.env.EMAIL, 
+        pass: process.env.EMAIL_PASS 
     }
 });
+
 
 
 //Send email when new is added to db, that match user interests
 const sendEmail = (recipeItem, targetEmail) => {
     const mailOptions = {
-        from: appmail,
+        from: process.env.EMAIL,
         to: targetEmail,
         subject: 'New Recipe added to our service!',
         text: `A new recipe has been added! \n${recipeItem.name}`
@@ -139,9 +140,10 @@ db.once('open', () => {
             const newItem = change.fullDocument
             const users = await User.find().lean()
             for (let [key, user] of Object.entries(users)) {
-                if (newItem.dishType.some(item => user.recipeInterests.includes(item)) && user.receiveRecommendations) {
-
-                    sendEmail(newItem, user.email)
+                if(newItem.dishType.some(item => user.recipeInterests.includes(item)) && user.receiveRecommendations) {
+                    
+                    //sendEmail(newItem, user.email)
+                    sendEmail(newItem, 'jenna21013@student.hamk.fi')
                 }
             };
 
