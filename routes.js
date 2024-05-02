@@ -92,7 +92,6 @@ router.get('/user_dashboard', ensureAuthenticated, (req, res) => {
 router.post('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
     try {
         const userId = req.user._id;
-        // Convert recipeId into ObjectId
         const recipeId = req.params.id;
         const recipe = await Recipe.findOne({ _id: recipeId }).lean();
 
