@@ -258,7 +258,7 @@ router.post('/admin_update_recipe/:id', ensureAdmin, [
         }
     });
 
-//Search chosen recipes from db
+// Search chosen recipes from db
 router.post('/searchRecipesDB', ensureAdmin, async (req, res) => {
     try {
         // Initializing an empty query object
@@ -291,6 +291,7 @@ router.post('/searchRecipesDB', ensureAdmin, async (req, res) => {
         res.status(500).json({ error: 'Error searching for recipes' });
     }
 });
+
 
 let searchedRecipes = [];
 
@@ -372,5 +373,5 @@ router.post('/saverecipe', ensureAdmin, async (req, res) => {
         res.status(500).json({ error: 'Error saving recipe' });
     }
 });
- 
+
 module.exports = router;

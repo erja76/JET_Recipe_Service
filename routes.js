@@ -125,7 +125,6 @@ router.post('/recipe_saved/:id', ensureAuthenticated, async (req, res) => {
 router.post('/recipe_marked_favorite/:id', ensureAuthenticated, async (req, res) => {
     try {
         const userId = req.user._id;
-        // Convert recipeId into ObjectId
         const recipeId = req.params.id;
         const recipe = await Recipe.findOne({ _id: recipeId }).lean();
 
@@ -165,14 +164,19 @@ router.get('/saved_recipes', ensureAuthenticated, async (req, res) => {
         const savedRecipeIds = user.savedRecipes; // Array of ObjectId's
 
         // Promise-metodi käy läpi recipeIDt ja palauttaa niitä vastaavat tiedot tietokannasta
-        const savedRecipes = await Promise.all(savedRecipeIds.map(async (recipeId) => {
+        const savedRecipesWithNulls = await Promise.all(savedRecipeIds.map(async (recipeId) => {
             const recipe = await Recipe.findById(recipeId).lean();
             return recipe;
         }));
+        // Filter out nulls caused by recipes not found in database (ie deleted recipe)
+        const savedRecipes = savedRecipesWithNulls.filter(element => {
+            return element !== null
+        });
         // tekee reseptien objectIDeistä stringejä (koska objectID:itä ei voi verrata edes keskenään)
         const favoriteRecipesIdsStrings = user.favoriteRecipes.map((arrayElement) => {
             return arrayElement.toString()
         })
+        // console.log(savedRecipes);
         // lisää tallennetuille resepteille uuden kentän: 'isFavorite' tähtimerkintää varten
         const savedRecipesWithFavorites = savedRecipes.map((arrayElement) => {
             const recipeId = arrayElement._id.toString();
@@ -203,10 +207,14 @@ router.get('/fave_recipes', ensureAuthenticated, async (req, res) => {
         const favoriteRecipeIds = user.favoriteRecipes; // Array of ObjectId's
 
         // Promise-metodi käy läpi recipeIDt ja palauttaa niitä vastaavat tiedot tietokannasta
-        const favoriteRecipes = await Promise.all(favoriteRecipeIds.map(async (recipeId) => {
+        const favoriteRecipesWithNulls = await Promise.all(favoriteRecipeIds.map(async (recipeId) => {
             const recipe = await Recipe.findById(recipeId).lean();
             return recipe;
         }));
+        // Filter out nulls caused by recipes not found in database (ie deleted recipe)
+        const favoriteRecipes = favoriteRecipesWithNulls.filter(element => {
+            return element !== null
+        });
 
         res.render('partials/fave_recipes', { user: req.user, recipeDisplay: favoriteRecipes });
     } catch (error) {
