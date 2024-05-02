@@ -1,15 +1,17 @@
 <h1>Welcome to JET Recipe Service!</h1>
 <br>
-<h3>You can look for recipes here:</h3>
-<br>
-
 
 {{#if message}}
 <p class="indexerror">{{message}}</p>
 {{/if}}
 
+<br>
+<h3>You can look for recipes here:</h3>
 {{> search}}
+<br>
 
-<br>
+{{#if user}}
+<!-- if user is logged in only the search box is shown... -->
+{{else}}
 <p>...but to save recipes you will need to register. </p>
-<br>
+{{/if}}

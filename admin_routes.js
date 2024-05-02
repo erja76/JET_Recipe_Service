@@ -89,7 +89,11 @@ router.post('/admin_update_user/:id', ensureAdmin, [
             if (!errors.isEmpty()) {
                 const userId = req.params.id;
                 const userToBeUpdated = await User.findById(userId).lean(); //Fetching the details of the user to be updated
-                return res.render('partials/admin_update_user', { user: req.user, userToBeUpdated: userToBeUpdated, errors: errors.array() });
+                return res.render('partials/admin_update_user', {
+                    user: req.user,
+                    userToBeUpdated: userToBeUpdated,
+                    errors: errors.array()
+                });
             }
 
             const userId = req.params.id;

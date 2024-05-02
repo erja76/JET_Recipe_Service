@@ -362,12 +362,12 @@ td img {
 
 #recipe-table {
     margin: auto;
-    width: 95%;
+    width: 96%;
     margin-bottom: 30px;
 }
 
 #recipe-table td {
-    padding: 8px;
+    padding: 5px;
 }
 
 .recipeListImage {

@@ -55,6 +55,7 @@ authUser = async (username, password, done) => {
     if (user === null) {
         return done(null, false, { message: 'Incorrect email.' });
     }
+    // bcrypt can compare plain text and hashed passwords
     bcrypt.compare(password, user.password, (err, res) => {
         if (err) { return done(err); }
         if (res) {
