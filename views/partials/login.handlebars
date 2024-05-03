@@ -9,8 +9,8 @@
         {{!-- if the passport authentication "fails",
         ie. email or password are wrong, this message will be displayed. --}}
         {{#if message}}
-        <div class="error-box">
-            <p>{{message}}</p>
+        <div class="error-box" aria-live="assertive">
+            <p class="error-message">{{message}}</p>
         </div>
         {{/if}}
 

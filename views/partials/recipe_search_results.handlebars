@@ -46,12 +46,12 @@
               -> käyttäjä ohjataan takaisin tälle sivulle. -->
         <form action="/recipe_saved/{{ this._id }}" method="post">
             <input type="hidden" name="currentURL" value="{{ ../currentURL }}">
-            <button type="submit"><strong>Save a Recipe</strong></button>
+            <button type="submit">Save a Recipe</button>
         </form>
 
         <form action="/recipe_marked_favorite/{{ this._id }}" method="post">
             <input type="hidden" name="currentURL" value="{{ ../currentURL }}">
-            <button type="submit"><strong>Mark as Favorite</strong></button>
+            <button type="submit">Mark as Favorite</button>
         </form>
 
         {{/if}}

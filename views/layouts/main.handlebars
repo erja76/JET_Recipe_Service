@@ -9,11 +9,11 @@
 </head>
 
 <body>
-    <header>
+    <header role="navigation">
         {{> nav}}
     </header>
 
-    <main>
+    <main role="main">
         {{#if user}}
         <div id="userBox">
             <p class="user-name">Currently logged in: <br> {{user.name}}</p>
@@ -24,7 +24,7 @@
         {{{body}}}
     </main>
 
-    <footer>
+    <footer role="contentinfo">
         <p>&copy;2024 Created by Tanja Eriksson, Jenna Korhonen and Erja Pisilä
             <a href="/JetAccessibilityStatement.html" id="accessibilityStatementLink">Accessibility Statement</a>
         </p>

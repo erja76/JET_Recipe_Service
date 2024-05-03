@@ -1,22 +1,22 @@
-<nav>
+<nav role="navigation" aria-label="Main Navigation"> 
     <ul>
         <li>
             <h2 class="home"><a href="/">JET Recipe Service</a></h2>
         </li>
         {{#if user}}
         {{#if user.adminRights}}
-        <li><a href="/admin" id="adminDashboardLink"><button>Admin Dashboard</button></a></li>
-        <li><a href="/user_dashboard" id="userDashboardLink"><button>User Dashboard</button></a></li>
+        <li><a href="/admin" id="adminDashboardLink">Admin Dashboard</a></li>
+        <li><a href="/user_dashboard" id="userDashboardLink">User Dashboard</a></li>
         {{else}}
-        <li><a href="/user_dashboard" id="userDashboardLink"><button>User Dashboard</button></a></li>
+        <li><a href="/user_dashboard" id="userDashboardLink">User Dashboard</a></li>
         {{/if}}
-        <li><a href="/update_user" id="dashboardLink"><button>Update your details</button></a></li>
+        <li><a href="/update_user" id="dashboardLink">Update your details</a></li>
         <li>
             <form id="logoutForm" action="/logout" method="POST"><button type="submit">Log out</button></form>
         </li>
         {{else}}
-        <li><a href="/login" id="loginLink"><button>Log in</button></a></li>
-        <li><a href="/register" id="registerLink"><button>Register</button></a></li>
+        <li><a href="/login" id="loginLink">Log in</a></li>
+        <li><a href="/register" id="registerLink">Register</a></li>
         {{/if}}
     </ul>
 </nav>
