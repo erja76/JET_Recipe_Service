@@ -1,6 +1,7 @@
 <!-- Validation Error message-->
+<section>
 {{#if errors}}
-   <div id="error-container" class="errors">
+   <div id="error-container" class="errors" aria-live="assertive">
     <ul>
       {{#each errors}}
         <li>{{ this.msg }}</li>
@@ -9,7 +10,9 @@
   </div>
 {{/if}}
 
-<div class="form-card">
+<h1>Update recipe {{recipeToBeUpdated.name}}</h1>
+
+<div class="form-card" type="form" aria-label="Update recipe">
     <form action="/admin_update_recipe/{{recipeToBeUpdated._id}}" method="post">
         <label for="name">Name:</label><br>
         <input type="text" id="name" name="name" value="{{recipeToBeUpdated.name}}"><br><br>
@@ -36,7 +39,7 @@
         <button type="button" onclick="window.location.href='/admin/recipes';"><strong>Cancel</strong></button>
     </form>
 </div>
-
+</section>
 <script>
   // Hide error message after 5 seconds
   setTimeout(function() {

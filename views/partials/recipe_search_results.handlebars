@@ -1,9 +1,10 @@
+<section>
 <h1>These recipes matched your search:</h1>
 <br>
 
 {{message}}
 
-<section class="recipe-section">
+
     {{#if recipes.length}}
     {{#each recipes}}
     <div class="recipe-card">
@@ -60,7 +61,6 @@
     {{else}}
     <p class="no">No recipes found.</p>
     {{/if}}
-</section>
 
 <br>
 
@@ -73,3 +73,4 @@
     <a href="/" class="button">Back to recipe search</a>
 </div>
 {{/if}}
+</section>

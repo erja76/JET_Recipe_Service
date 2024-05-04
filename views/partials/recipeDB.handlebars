@@ -55,6 +55,8 @@
 <!-- Database search form -->
 <div class="form-card" id="searchDB-Form" style="display: none;">
     <form id="recipeSearch-Form" onsubmit="searchRecipesFromDB(); return false;">
+        <label for="cuisineType">Search recipes by cuisine type</label>
+
         <select name="cuisineType" id="cuisineType">
             <option value="">Search recipes by cuisine type</option>
             <option value="American">American</option>
@@ -78,6 +80,7 @@
         </select>
 
         <br>
+        <label for="mealType">Search recipes by meal type</label>
         <select name="mealType" id="mealType">
             <option value="">Search recipes by meal type</option>
             <option value="Breakfast">Breakfast</option>
@@ -88,6 +91,8 @@
         </select>
 
         <br>
+        <label for="dishType">Search recipes by dish type</label>
+
         <select name="dishType" id="dishType">
             <option value="">Search recipes by dish type</option>
             <option value="Biscuits and cookies">Biscuits and cookies</option>
@@ -109,10 +114,15 @@
         </select>
 
         <br>
+        <label for="ingredients">Search recipes by ingredient</label>
+
         <input type="text" placeholder="Search recipes by ingredient" name="ingredients">
         <br>
+        <label for="name">Search recipes by name</label>
+
         <input type="text" placeholder="Search recipes by name" name="name">
         <br>
+
         <button type="button" onclick="searchRecipesFromDB()">Search</button>
     </form>
 </div>

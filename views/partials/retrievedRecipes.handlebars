@@ -6,11 +6,11 @@
 <br>
 
 {{#if errorMessage}}
-<div class="error-message">{{ errorMessage }}</div>
+<div class="error-message" aria-live="assertive">{{ errorMessage }}</div>
 {{/if}}
 
 {{#if successMessage}}
-<div class="success-message">{{ successMessage }}</div>
+<div class="success-message" aria-live="polite">{{ successMessage }}</div>
 {{/if}}
 
 <!--"Print out the recipes retrieved for edamame on recipe cards. -->
@@ -45,7 +45,7 @@
       <li>{{ this }}</li>
       {{/each}}
     </ul>
-    <form action="/saverecipe" method="post">
+    <form action="/saverecipe" method="post"> 
       <input type="hidden" name="name" value="{{ this.name }}">
       <input type="hidden" name="image" value="{{ this.image }}">
       <input type="hidden" name="ingredients" value="{{ this.ingredients }}">

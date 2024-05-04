@@ -1,6 +1,6 @@
 <!-- Validation Error message-->
 {{#if errors}}
-<div id="error-container" class="errors">
+<div aria-live="assertive" id="error-container" class="errors">
   <ul>
     {{#each errors}}
     <li>{{ this.msg }}</li>
@@ -9,16 +9,16 @@
 </div>
 {{/if}}
 
-<div class="form-card">
+<div type="form" aria-label="Update user preferences form" class="form-card">
   <form id="updateForm" action="/update_user/{{userToBeUpdated._id}}" method="POST">
-    <label for="name"><strong>Name:</strong></label>
-    <strong>{{userToBeUpdated.name}}</strong><br>
+    <label for="name">Name:</label>
+    {{userToBeUpdated.name}}<br>
     <br>
-    <label for="password"><strong>Password:</strong></label>
+    <label for="password">Password:</label>
     <input type="password" name="password" placeholder="New password"><br>
     <br>
-    <label for="email"><strong>Email:</strong></label>
-    <strong>{{userToBeUpdated.email}}</strong><br>
+    <label for="email">Email:</label>
+    {{userToBeUpdated.email}}<br>
     <br>
 
     {{#if showPasswordInput}}
@@ -27,8 +27,8 @@
 
     {{> user_preferences}}
 
-    <button type="submit"><strong>Update Preferences</strong></button>
-    <button type="button" onclick="window.location.href='/user_dashboard';"><strong>Cancel</strong></button>
+    <button type="submit">Update Preferences</button>
+    <button type="button" aria-label="Cancel and go to user dashboard" onclick="window.location.href='/user_dashboard';">Cancel</button>
   </form>
 </div>
 

@@ -188,7 +188,7 @@ form button {
     background-color: bisque;
 }
 
-.admin-form-card a, .back-to-button a {
+.back-to-button a {
     font-size: x-large;
     margin-top: 20px;
     align-content: center;

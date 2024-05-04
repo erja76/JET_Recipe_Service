@@ -1,5 +1,5 @@
+<section>
 <h1>User Database</h1>
-<br>
 
 <table id="user-table" class="table">
     <tr>
@@ -43,7 +43,7 @@
     </tr>
     {{/each}}
 </table>
-<br>
+
 
 <script>
     function confirmDelete(userName) {
@@ -56,17 +56,18 @@
     }
 </script>
 
-<br>
-<div>
+
+<div type="form" aria-label="Search users">
     <form action="/admin/users/search" method="get">
+    <label for="searchQuery"></label>
         <input type="text" name="searchQuery" placeholder="Search user by name">
-        <button class="searchButton" type="submit"><strong>Search</strong></button>
+        <button class="searchButton" type="submit">Search</button>
     </form>
 </div>
-<br>
 
-<div>
-    <a href="/admin_add_user" id="userAddLink"><button class="addButton" type="submit"><strong>Add a new
-                user</strong></button></a>
+
+<div aria-label="Add new user">
+    <a href="/admin_add_user" id="userAddLink"><button class="addButton" type="submit">Add a new
+                user</button></a>
 </div>
-<br>
+</section>

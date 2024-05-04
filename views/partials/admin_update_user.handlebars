@@ -8,16 +8,17 @@
   </ul>
 </div>
 {{/if}}
-
-<div class="form-card">
+<section>
+<h1>Update user {{userToBeUpdated.name}}</h1>
+<div class="form-card" type="form">
   <form id="updateForm" action="/admin_update_user/{{userToBeUpdated._id}}" method="POST">
-    <label for="name"><strong>Name:</strong></label>
+    <label for="name">Name:</label>
     <input type="text" name="name" placeholder="{{userToBeUpdated.name}}" value="{{userToBeUpdated.name}}"><br>
     <br>
-    <label for="password"><strong>Password:</strong></label>
+    <label for="password">Password:</label>
     <input type="text" name="password" placeholder="New password"><br>
     <br>
-    <label for="email"><strong>Email:</strong></label>
+    <label for="email">Email:</label>
     <input type="email" name="email" placeholder="{{userToBeUpdated.email}}" value="{{userToBeUpdated.email}}"><br>
     <br>
 
@@ -27,7 +28,7 @@
 
     {{> user_preferences}}
 
-    <label><strong>Would you like to give this user admin rights?</strong></label><br>
+    <label>Would you like to give this user admin rights?</label><br>
     <input type="radio" id="adminRightsYes" name="adminRights" value="true" {{#ifEqual userToBeUpdated.adminRights true
       }}checked{{/ifEqual}} required>
     <label for="adminRightsYes">Yes</label>
@@ -37,10 +38,11 @@
 
     <input type="hidden" name="userId" value="{{user._id}}">
 
-    <button type="submit"><strong>Update Preferences</strong></button>
+    <button type="submit">Update Preferences</button>
     <button type="button" onclick="window.location.href='/admin/users';"><strong>Cancel</strong></button>
   </form>
 </div>
+</section>
 
 <script>
   // Hide error message after 5 seconds

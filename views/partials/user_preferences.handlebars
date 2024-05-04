@@ -1,4 +1,4 @@
-<label for="recipePreferences"><strong>What kind of recipes do you like?</strong></label><br>
+<label for="recipePreferences">What kind of recipes do you like?</label><br>
 <input type="checkbox" {{#ifIn "salad" userToBeUpdated.recipeInterests}} checked {{/ifIn}} id="salad"
     name="recipePreferences" value="salad">
 <label for="salad">Salad</label><br>
@@ -23,8 +23,8 @@
     name="recipePreferences" value="desserts">
 <label for="desserts">Desserts</label><br>
 
-<label><strong>Would you like to receive recommendations of recipes that match your
-        preferences?</strong></label><br>
+<label>Would you like to receive recommendations of recipes that match your
+        preferences?</label><br>
 <input type="radio" id="recommendationsYes" name="receiveRecommendations" value="true" {{#ifEqual
     userToBeUpdated.receiveRecommendations true }}checked{{/ifEqual}} required>
 <label for="recommendationsYes">Yes</label>
